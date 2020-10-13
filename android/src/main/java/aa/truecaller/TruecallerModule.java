@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -26,7 +27,6 @@ import com.truecaller.android.sdk.TruecallerSDK;
 import com.truecaller.android.sdk.TruecallerSdkScope;
 
 public class TruecallerModule extends ReactContextBaseJavaModule implements ITrueCallback, ActivityEventListener {
-    private final String TAG = "TruecallerModule";
     private final ReactContext mReactContext;
 
     public TruecallerModule(ReactApplicationContext reactContext) {
@@ -154,20 +154,16 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     }
 
     private int getSdkOptions(String sdkOption) {
-        switch (sdkOption) {
-            case "SDK_OPTION_WITH_OTP":
-                return TruecallerSdkScope.SDK_OPTION_WITH_OTP;
-            default:
-                return TruecallerSdkScope.SDK_OPTION_WITHOUT_OTP;
+        if ("SDK_OPTION_WITH_OTP".equals(sdkOption)) {
+            return TruecallerSdkScope.SDK_OPTION_WITH_OTP;
         }
+        return TruecallerSdkScope.SDK_OPTION_WITHOUT_OTP;
     }
 
     @ReactMethod
     public void initializeClient(ReadableMap options) {
-        String consentMode = options.hasKey("consentMode") ? options.getString("consentMode") : null;
-        Log.d("SDK options: ", options.toString());
         TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, this)
-                .consentMode(this.getConsentMode(consentMode))
+                .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : null))
                 .privacyPolicyUrl(options.getString("privacyLink"))
                 .termsOfServiceUrl(options.getString("tncLink"))
                 .loginTextPrefix(this.getLoginPrefix(options.hasKey("loginPrefix") ? options.getString("loginPrefix") : null))
@@ -175,18 +171,21 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
                 .ctaTextPrefix(this.getCtaPrefix(options.hasKey("ctaPrefix") ? options.getString("ctaPrefix") : null))
                 .buttonShapeOptions(TruecallerSdkScope.BUTTON_SHAPE_ROUNDED)
                 .footerType(this.getFooterCta(options.hasKey("footerCta") ? options.getString("footerCta") : null))
-                .consentTitleOption(this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : null));
+                .consentTitleOption(this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : null))
+                .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getString("sdkOption") : null));
         if (options.hasKey("buttonColor")) {
             trueScopeBuilder.buttonColor(Color.parseColor(options.getString("buttonColor")));
         }
         if (options.hasKey("buttonTextColor")) {
             trueScopeBuilder.buttonTextColor(Color.parseColor(options.getString("buttonTextColor")));
         }
-        trueScopeBuilder
-                .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getString("sdkOption") : null))
-                .build();
 
         TruecallerSDK.init(trueScopeBuilder.build());
+    }
+
+    @ReactMethod
+    public void isUsable(final Promise callback) {
+        callback.resolve(TruecallerSDK.getInstance().isUsable());
     }
 
     @ReactMethod
@@ -233,15 +232,10 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
         params.putInt("errorCode", trueError.getErrorType());
 
         sendEvent(mReactContext, "profileErrorResponse", params);
-
     }
 
     @Override
     public void onVerificationRequired(TrueError trueError) {
-    }
-
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {

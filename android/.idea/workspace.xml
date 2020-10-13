@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1e21daf3-ae03-4ff5-9ede-e7bc56ada0d0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aa/truecaller/TruecallerModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aa/truecaller/TruecallerModule.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,10 +71,10 @@
       <screen x="0" y="23" width="1440" height="793" />
     </state>
     <state x="221" y="58" key="SettingsEditor/0.23.1440.793@0.23.1440.793" timestamp="1602510706954" />
-    <state width="300" height="36" key="javadoc.popup.new" timestamp="1602515607794">
+    <state width="300" height="36" key="javadoc.popup.new" timestamp="1602584151075">
       <screen x="0" y="23" width="1440" height="793" />
     </state>
-    <state width="300" height="36" key="javadoc.popup.new/0.23.1440.793@0.23.1440.793" timestamp="1602515607794" />
+    <state width="300" height="36" key="javadoc.popup.new/0.23.1440.793@0.23.1440.793" timestamp="1602584151075" />
     <state x="385" y="140" key="search.everywhere.popup" timestamp="1602515589073">
       <screen x="0" y="23" width="1440" height="793" />
     </state>
