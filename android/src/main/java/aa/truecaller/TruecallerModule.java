@@ -2,56 +2,37 @@ package aa.truecaller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.truecaller.android.sdk.ITrueCallback;
-import com.truecaller.android.sdk.TrueSDK;
 import com.truecaller.android.sdk.TrueError;
 import com.truecaller.android.sdk.TrueProfile;
-import com.truecaller.android.sdk.TrueSdkScope;
+import com.truecaller.android.sdk.TruecallerSDK;
+import com.truecaller.android.sdk.TruecallerSdkScope;
 
-
-
-public class TruecallerModule extends ReactContextBaseJavaModule implements ITrueCallback{
-
-    private TrueSDK trueSDK;
-    private String TAG="TruecallerModule";
-
-    private  ReactContext reactContext;
-    private ActivityEventListener mEventListener = new BaseActivityEventListener(){
-        @Override
-        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-            if (null != trueSDK && trueSDK.isUsable()) {
-                trueSDK.onActivityResultObtained(activity, resultCode, data);
-            }
-        }
-    };
-
-    private boolean isUsable() {
-        return trueSDK.isUsable();
-    }
-
-    @ReactMethod
-    public void isUsable(Callback boolCallBack) {
-        boolCallBack.invoke(trueSDK.isUsable());
-    }
+public class TruecallerModule extends ReactContextBaseJavaModule implements ITrueCallback, ActivityEventListener {
+    private final String TAG = "TruecallerModule";
+    private final ReactContext mReactContext;
 
     public TruecallerModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.reactContext=reactContext;
-        reactContext.addActivityEventListener(mEventListener);
+        mReactContext = reactContext;
+        reactContext.addActivityEventListener(this);
     }
 
     @Override
@@ -59,118 +40,219 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
         return "TruecallerModule";
     }
 
+    @ReactMethod
+    public void isUsable(Callback boolCallBack) {
+        boolCallBack.invoke(TruecallerSDK.getInstance().isUsable());
+    }
+
     private int getConsentMode(String mode) {
         switch (mode) {
-            case "CONSENT_MODE_POPUP":
-                return TrueSdkScope.CONSENT_MODE_POPUP;
             case "CONSENT_MODE_FULLSCREEN":
-                return TrueSdkScope.CONSENT_MODE_FULLSCREEN;
+                return TruecallerSdkScope.CONSENT_MODE_FULLSCREEN;
+            case "CONSENT_MODE_BOTTOMSHEET":
+                return TruecallerSdkScope.CONSENT_MODE_BOTTOMSHEET;
             default:
-                return TrueSdkScope.CONSENT_MODE_POPUP;
+                return TruecallerSdkScope.CONSENT_MODE_POPUP;
         }
     }
 
-    private int getConsentTitle(String title) {
-        switch (title) {
-            case "SDK_CONSENT_TITLE_LOG_IN":
-                return TrueSdkScope.SDK_CONSENT_TITLE_LOG_IN;
-            case "SDK_CONSENT_TITLE_SIGN_UP":
-                return TrueSdkScope.SDK_CONSENT_TITLE_SIGN_UP;
-            case "SDK_CONSENT_TITLE_SIGN_IN":
-                return TrueSdkScope.SDK_CONSENT_TITLE_SIGN_IN;
-            case "SDK_CONSENT_TITLE_VERIFY":
-                return TrueSdkScope.SDK_CONSENT_TITLE_VERIFY;
-            case "SDK_CONSENT_TITLE_REGISTER":
-                return TrueSdkScope.SDK_CONSENT_TITLE_REGISTER;
-            case "SDK_CONSENT_TITLE_GET_STARTED":
-                return TrueSdkScope.SDK_CONSENT_TITLE_GET_STARTED;
+    private int getLoginPrefix(String loginPrefix) {
+        switch (loginPrefix) {
+            case "LOGIN_TEXT_PREFIX_TO_CONTINUE":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_CONTINUE;
+            case "LOGIN_TEXT_PREFIX_TO_PLACE_ORDER":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_PLACE_ORDER;
+            case "LOGIN_TEXT_PREFIX_TO_COMPLETE_YOUR_PURCHASE":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_COMPLETE_YOUR_PURCHASE;
+            case "LOGIN_TEXT_PREFIX_TO_CHECKOUT":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_CHECKOUT;
+            case "LOGIN_TEXT_PREFIX_TO_COMPLETE_YOUR_BOOKING":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_COMPLETE_YOUR_BOOKING;
+            case "LOGIN_TEXT_PREFIX_TO_PROCEED_WITH_YOUR_BOOKING":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_PROCEED_WITH_YOUR_BOOKING;
+            case "LOGIN_TEXT_PREFIX_TO_CONTINUE_WITH_YOUR_BOOKING":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_CONTINUE_WITH_YOUR_BOOKING;
+            case "LOGIN_TEXT_PREFIX_TO_GET_DETAILS":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_GET_DETAILS;
+            case "LOGIN_TEXT_PREFIX_TO_VIEW_MORE":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_VIEW_MORE;
+            case "LOGIN_TEXT_PREFIX_TO_CONTINUE_READING":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_CONTINUE_READING;
+            case "LOGIN_TEXT_PREFIX_TO_PROCEED":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_PROCEED;
+            case "LOGIN_TEXT_PREFIX_FOR_NEW_UPDATES":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_FOR_NEW_UPDATES;
+            case "LOGIN_TEXT_PREFIX_TO_GET_UPDATES":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_GET_UPDATES;
+            case "LOGIN_TEXT_PREFIX_TO_SUBSCRIBE":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_SUBSCRIBE;
+            case "LOGIN_TEXT_PREFIX_TO_SUBSCRIBE_AND_GET_UPDATES":
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_SUBSCRIBE_AND_GET_UPDATES;
             default:
-                return TrueSdkScope.SDK_CONSENT_TITLE_GET_STARTED;
+                return TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_GET_STARTED;
         }
     }
 
-    private int getFooterType(String footerType) {
-        switch (footerType) {
+    private int getLoginSuffix(String loginSuffix) {
+        switch (loginSuffix) {
+            case "LOGIN_TEXT_SUFFIX_PLEASE_LOGIN":
+                return TruecallerSdkScope.LOGIN_TEXT_SUFFIX_PLEASE_LOGIN;
+            case "LOGIN_TEXT_SUFFIX_PLEASE_SIGNUP":
+                return TruecallerSdkScope.LOGIN_TEXT_SUFFIX_PLEASE_SIGNUP;
+            case "LOGIN_TEXT_SUFFIX_PLEASE_LOGIN_SIGNUP":
+                return TruecallerSdkScope.LOGIN_TEXT_SUFFIX_PLEASE_LOGIN_SIGNUP;
+            case "LOGIN_TEXT_SUFFIX_PLEASE_REGISTER":
+                return TruecallerSdkScope.LOGIN_TEXT_SUFFIX_PLEASE_REGISTER;
+            case "LOGIN_TEXT_SUFFIX_PLEASE_SIGN_IN":
+                return TruecallerSdkScope.LOGIN_TEXT_SUFFIX_PLEASE_SIGN_IN;
+            default:
+                return TruecallerSdkScope.LOGIN_TEXT_SUFFIX_PLEASE_VERIFY_MOBILE_NO;
+        }
+    }
+
+    private int getCtaPrefix(String ctaPrefix) {
+        switch (ctaPrefix) {
+            case "CTA_TEXT_PREFIX_USE":
+                return TruecallerSdkScope.CTA_TEXT_PREFIX_USE;
+            case "CTA_TEXT_PREFIX_PROCEED_WITH":
+                return TruecallerSdkScope.CTA_TEXT_PREFIX_PROCEED_WITH;
+            default:
+                return TruecallerSdkScope.CTA_TEXT_PREFIX_CONTINUE_WITH;
+        }
+    }
+
+    private int getFooterCta(String footerCta) {
+        switch (footerCta) {
             case "FOOTER_TYPE_SKIP":
-                return TrueSdkScope.FOOTER_TYPE_SKIP;
+                return TruecallerSdkScope.FOOTER_TYPE_SKIP;
             case "FOOTER_TYPE_CONTINUE":
-                return TrueSdkScope.FOOTER_TYPE_CONTINUE;
+                return TruecallerSdkScope.FOOTER_TYPE_CONTINUE;
+            case "FOOTER_TYPE_MANUALLY":
+                return TruecallerSdkScope.FOOTER_TYPE_MANUALLY;
+            case "FOOTER_TYPE_LATER":
+                return TruecallerSdkScope.FOOTER_TYPE_LATER;
             default:
-                return TrueSdkScope.FOOTER_TYPE_CONTINUE;
+                return TruecallerSdkScope.FOOTER_TYPE_ANOTHER_METHOD;
+        }
+    }
+
+    private int getConsentTitle(String consentTitle) {
+        switch (consentTitle) {
+            case "SDK_CONSENT_TITLE_LOG_IN":
+                return TruecallerSdkScope.SDK_CONSENT_TITLE_LOG_IN;
+            case "SDK_CONSENT_TITLE_SIGN_UP":
+                return TruecallerSdkScope.SDK_CONSENT_TITLE_SIGN_UP;
+            case "SDK_CONSENT_TITLE_SIGN_IN":
+                return TruecallerSdkScope.SDK_CONSENT_TITLE_SIGN_IN;
+            case "SDK_CONSENT_TITLE_VERIFY":
+                return TruecallerSdkScope.SDK_CONSENT_TITLE_VERIFY;
+            case "SDK_CONSENT_TITLE_REGISTER":
+                return TruecallerSdkScope.SDK_CONSENT_TITLE_REGISTER;
+            default:
+                return TruecallerSdkScope.SDK_CONSENT_TITLE_GET_STARTED;
+        }
+    }
+
+    private int getSdkOptions(String sdkOption) {
+        switch (sdkOption) {
+            case "SDK_OPTION_WITH_OTP":
+                return TruecallerSdkScope.SDK_OPTION_WITH_OTP;
+            default:
+                return TruecallerSdkScope.SDK_OPTION_WITHOUT_OTP;
         }
     }
 
     @ReactMethod
-    public void initializeClient(String consentMode, String consentTitle, String footerType) {
-        Log.d("SDK options: ", "Truecaller Mode: "+consentMode+". Title: "+consentTitle+". Footer: "+footerType);
-        TrueSdkScope trueScope = new TrueSdkScope.Builder(this.reactContext, this)
-                .consentMode( this.getConsentMode(consentMode) )
-                .consentTitleOption( this.getConsentTitle(consentTitle) )
-                .footerType( this.getFooterType(footerType) )
+    public void initializeClient(ReadableMap options) {
+        String consentMode = options.hasKey("consentMode") ? options.getString("consentMode") : null;
+        Log.d("SDK options: ", options.toString());
+        TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, this)
+                .consentMode(this.getConsentMode(consentMode))
+                .privacyPolicyUrl(options.getString("privacyLink"))
+                .termsOfServiceUrl(options.getString("tncLink"))
+                .loginTextPrefix(this.getLoginPrefix(options.hasKey("loginPrefix") ? options.getString("loginPrefix") : null))
+                .loginTextSuffix(this.getLoginSuffix(options.hasKey("loginSuffix") ? options.getString("loginSuffix") : null))
+                .ctaTextPrefix(this.getCtaPrefix(options.hasKey("ctaPrefix") ? options.getString("ctaPrefix") : null))
+                .buttonShapeOptions(TruecallerSdkScope.BUTTON_SHAPE_ROUNDED)
+                .footerType(this.getFooterCta(options.hasKey("footerCta") ? options.getString("footerCta") : null))
+                .consentTitleOption(this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : null));
+        if (options.hasKey("buttonColor")) {
+            trueScopeBuilder.buttonColor(Color.parseColor(options.getString("buttonColor")));
+        }
+        if (options.hasKey("buttonTextColor")) {
+            trueScopeBuilder.buttonTextColor(Color.parseColor(options.getString("buttonTextColor")));
+        }
+        trueScopeBuilder
+                .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getString("sdkOption") : null))
                 .build();
-        TrueSDK.init(trueScope);
-        trueSDK = TrueSDK.getInstance();
-        Log.d("SDK instance is", trueSDK.toString());
+
+        TruecallerSDK.init(trueScopeBuilder.build());
     }
 
     @ReactMethod
     public void requestTrueProfile() {
         Activity activity = getCurrentActivity();
-        if (trueSDK.isUsable()) {
-            trueSDK.getUserProfile(activity);
-            Log.d("Truecaller", "Truecaller installed.");
-        } 
-        else {
-            Log.d("Truecaller", "Truecaller not installed");
+        if (activity != null) {
+            TruecallerSDK.getInstance().getUserProfile((FragmentActivity) activity);
         }
     }
 
     @Override
-    public void onSuccessProfileShared(@NonNull TrueProfile trueProfile)
-    {
+    public void onSuccessProfileShared(@NonNull TrueProfile trueProfile) {
         WritableMap params = Arguments.createMap();
-        params.putString("firstName",trueProfile.firstName);
-        params.putString("lastName",trueProfile.lastName);
-        params.putString("phoneNumber",trueProfile.phoneNumber);
-        params.putString("gender",trueProfile.gender);
-        params.putString("street",trueProfile.street);
-        params.putString("city",trueProfile.city);
-        params.putString("zipcode",trueProfile.zipcode);
-        params.putString("countryCode",trueProfile.countryCode);
-        params.putString("facebookId",trueProfile.facebookId);
-        params.putString("twitterId",trueProfile.twitterId);
-        params.putString("email",trueProfile.email);
-        params.putString("url",trueProfile.url);
-        params.putString("avatarUrl",trueProfile.avatarUrl);
-        params.putBoolean("isTrueName",trueProfile.isTrueName);
-        params.putBoolean("isAmbassador",trueProfile.isAmbassador);
-        params.putString("companyName",trueProfile.companyName);
-        params.putString("jobTitle",trueProfile.jobTitle);
-        params.putString("payload",trueProfile.payload);
-        params.putString("signature",trueProfile.signature);
-        params.putString("signatureAlgorithm",trueProfile.signatureAlgorithm);
-        params.putString("requestNonce",trueProfile.requestNonce);
-        params.putBoolean("isSimChanged",trueProfile.isSimChanged);
-        params.putString("verificationMode",trueProfile.verificationMode);
-        sendEvent(reactContext, "profileSuccessReponse", params);
+        params.putString("firstName", trueProfile.firstName);
+        params.putString("lastName", trueProfile.lastName);
+        params.putString("phoneNumber", trueProfile.phoneNumber);
+        params.putString("gender", trueProfile.gender);
+        params.putString("street", trueProfile.street);
+        params.putString("city", trueProfile.city);
+        params.putString("zipcode", trueProfile.zipcode);
+        params.putString("countryCode", trueProfile.countryCode);
+        params.putString("facebookId", trueProfile.facebookId);
+        params.putString("twitterId", trueProfile.twitterId);
+        params.putString("email", trueProfile.email);
+        params.putString("url", trueProfile.url);
+        params.putString("avatarUrl", trueProfile.avatarUrl);
+        params.putBoolean("isTrueName", trueProfile.isTrueName);
+        params.putBoolean("isAmbassador", trueProfile.isAmbassador);
+        params.putString("companyName", trueProfile.companyName);
+        params.putString("jobTitle", trueProfile.jobTitle);
+        params.putString("payload", trueProfile.payload);
+        params.putString("signature", trueProfile.signature);
+        params.putString("signatureAlgorithm", trueProfile.signatureAlgorithm);
+        params.putString("requestNonce", trueProfile.requestNonce);
+        params.putBoolean("isSimChanged", trueProfile.isSimChanged);
+        params.putString("verificationMode", trueProfile.verificationMode);
+        sendEvent(mReactContext, "profileSuccessResponse", params);
     }
 
     @Override
     public void onFailureProfileShared(@NonNull TrueError trueError) {
         WritableMap params = Arguments.createMap();
-        params.putString("profile","error");
-        params.putInt("errorCode",trueError.getErrorType());
+        params.putString("profile", "error");
+        params.putInt("errorCode", trueError.getErrorType());
 
-        sendEvent(reactContext, "profileErrorReponse", params);
+        sendEvent(mReactContext, "profileErrorResponse", params);
 
     }
 
     @Override
-    public void onVerificationRequired() {
+    public void onVerificationRequired(TrueError trueError) {
+    }
+
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
 
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Activity activity = getCurrentActivity();
+        if (activity != null && TruecallerSDK.getInstance() != null && TruecallerSDK.getInstance().isUsable()) {
+            TruecallerSDK.getInstance().onActivityResultObtained((FragmentActivity) activity, resultCode, data);
+        }
     }
 }
