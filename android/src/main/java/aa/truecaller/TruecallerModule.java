@@ -196,8 +196,9 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     }
 
     @ReactMethod
-    public void isUsable(final Promise callback) {
-        callback.resolve(TruecallerSDK.getInstance().isUsable());
+    public void isUsable(Callback callback) {
+        callback.invoke(TruecallerSDK.getInstance().isUsable());
+//    callback.resolve(false);
     }
 
     @ReactMethod
