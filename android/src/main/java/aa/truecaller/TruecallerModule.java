@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.truecaller.android.sdk.ITrueCallback;
@@ -25,6 +26,8 @@ import com.truecaller.android.sdk.TrueError;
 import com.truecaller.android.sdk.TrueProfile;
 import com.truecaller.android.sdk.TruecallerSDK;
 import com.truecaller.android.sdk.TruecallerSdkScope;
+
+import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 public class TruecallerModule extends ReactContextBaseJavaModule implements ITrueCallback, ActivityEventListener {
     private final ReactContext mReactContext;
@@ -203,10 +206,12 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
 
     @ReactMethod
     public void requestTrueProfile() {
-        Activity activity = getCurrentActivity();
-        if (activity != null) {
-            TruecallerSDK.getInstance().getUserProfile((FragmentActivity) activity);
-        }
+        runOnUiThread(() -> {
+            Activity activity = getCurrentActivity();
+            if (activity != null) {
+                TruecallerSDK.getInstance().getUserProfile((FragmentActivity) activity);
+            }
+        });
     }
 
     @Override
