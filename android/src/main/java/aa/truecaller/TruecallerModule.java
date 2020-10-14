@@ -3,8 +3,8 @@ package aa.truecaller;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
@@ -38,11 +38,6 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     @Override
     public String getName() {
         return "TruecallerModule";
-    }
-
-    @ReactMethod
-    public void isUsable(Callback boolCallBack) {
-        boolCallBack.invoke(TruecallerSDK.getInstance().isUsable());
     }
 
     private int getConsentMode(String mode) {
@@ -163,16 +158,16 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     @ReactMethod
     public void initializeClient(ReadableMap options) {
         TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, this)
-                .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : null))
+                .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : ""))
                 .privacyPolicyUrl(options.getString("privacyLink"))
                 .termsOfServiceUrl(options.getString("tncLink"))
-                .loginTextPrefix(this.getLoginPrefix(options.hasKey("loginPrefix") ? options.getString("loginPrefix") : null))
-                .loginTextSuffix(this.getLoginSuffix(options.hasKey("loginSuffix") ? options.getString("loginSuffix") : null))
-                .ctaTextPrefix(this.getCtaPrefix(options.hasKey("ctaPrefix") ? options.getString("ctaPrefix") : null))
+                .loginTextPrefix(this.getLoginPrefix(options.hasKey("loginPrefix") ? options.getString("loginPrefix") : ""))
+                .loginTextSuffix(this.getLoginSuffix(options.hasKey("loginSuffix") ? options.getString("loginSuffix") : ""))
+                .ctaTextPrefix(this.getCtaPrefix(options.hasKey("ctaPrefix") ? options.getString("ctaPrefix") : ""))
                 .buttonShapeOptions(TruecallerSdkScope.BUTTON_SHAPE_ROUNDED)
-                .footerType(this.getFooterCta(options.hasKey("footerCta") ? options.getString("footerCta") : null))
-                .consentTitleOption(this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : null))
-                .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getString("sdkOption") : null));
+                .footerType(this.getFooterCta(options.hasKey("footerCta") ? options.getString("footerCta") : ""))
+                .consentTitleOption(this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : ""))
+                .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getString("sdkOption") : ""));
         if (options.hasKey("buttonColor")) {
             trueScopeBuilder.buttonColor(Color.parseColor(options.getString("buttonColor")));
         }
@@ -180,7 +175,24 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
             trueScopeBuilder.buttonTextColor(Color.parseColor(options.getString("buttonTextColor")));
         }
 
+//        TruecallerSDK.init(trueScopeBuilder.build());
+
+//        TruecallerSdkScope trueScope = new TruecallerSdkScope.Builder(mReactContext, this)
+//                .consentMode(TruecallerSdkScope.CONSENT_MODE_BOTTOMSHEET)
+////                .buttonColor(Color.parseColor(colorSpinner.getSelectedItem().toString()))
+////                .buttonTextColor(Color.parseColor(colorTextSpinner.getSelectedItem().toString()))
+//                .loginTextPrefix(TruecallerSdkScope.LOGIN_TEXT_PREFIX_TO_GET_STARTED)
+//                .loginTextSuffix(TruecallerSdkScope.LOGIN_TEXT_SUFFIX_PLEASE_VERIFY_MOBILE_NO)
+//                .ctaTextPrefix(TruecallerSdkScope.CTA_TEXT_PREFIX_USE)
+//                .buttonShapeOptions(TruecallerSdkScope.BUTTON_SHAPE_ROUNDED)
+//                .privacyPolicyUrl("<<YOUR_PRIVACY_POLICY_LINK>>")
+//                .termsOfServiceUrl("<<YOUR_PRIVACY_POLICY_LINK>>")
+//                .footerType(TruecallerSdkScope.FOOTER_TYPE_NONE)
+//                .consentTitleOption(TruecallerSdkScope.SDK_CONSENT_TITLE_LOG_IN)
+//                .sdkOptions(TruecallerSdkScope.SDK_OPTION_WITHOUT_OTP)
+//                .build();
         TruecallerSDK.init(trueScopeBuilder.build());
+
     }
 
     @ReactMethod
@@ -243,10 +255,15 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Activity activity = getCurrentActivity();
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (activity != null && TruecallerSDK.getInstance() != null && TruecallerSDK.getInstance().isUsable()) {
             TruecallerSDK.getInstance().onActivityResultObtained((FragmentActivity) activity, resultCode, data);
         }
     }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+
+    }
 }
+
