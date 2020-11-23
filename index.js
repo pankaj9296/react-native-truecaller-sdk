@@ -7,12 +7,8 @@ const TRUECALLER = {};
 
 // Call this method to initialize client before using it. 
 // Pass in configuration params as required.
-TRUECALLER.initializeClient = (
-    consentMode = TRUECALLER_CONSENT_MODE.Popup,
-    consentTitle = TRUECALLER_CONSENT_TITLE.Login,
-    footerType = TRUECALLER_FOOTER_TYPE.Continue
-) => {
-    return RCTTruecaller.initializeClient(consentMode, consentTitle, footerType);
+TRUECALLER.initializeClient = (options) => {
+    return RCTTruecaller.initializeClient(options);
 };
 
 // TRUECALLER.initializeClientIOS = (appKey,appLink) => 
@@ -35,7 +31,7 @@ TRUECALLER.isUsable = (resultCallBack) => {
 // The callback will be passed a single parameter which will be the user profile if the user accepts the request
 // or an error object if the user rejects the request.
 TRUECALLER.on = (event, callback) => {
-    if (!Object.values(TRUECALLER_EVENT).includes(event)) {
+    if (TRUECALLER_EVENT[event] !== undefined) {
       throw new Error(`Invalid TRUECALLER_EVENT event subscription, use import {TRUECALLER_EVENT} from 'react-native-truecaller-sdk' to avoid typo`);
     };
     return EventEmitter.addListener(event, callback);
@@ -43,8 +39,8 @@ TRUECALLER.on = (event, callback) => {
 
 // Callback event success and failure types
 export const TRUECALLER_EVENT = {
-    TrueProfileResponse: 'profileSuccessReponse',
-    TrueProfileResponseError: 'profileErrorReponse',
+    TrueProfileResponse: 'profileSuccessResponse',
+    TrueProfileResponseError: 'profileErrorResponse',
 };
 
 

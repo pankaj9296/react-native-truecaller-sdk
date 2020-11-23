@@ -3,8 +3,8 @@ package aa.truecaller;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.truecaller.android.sdk.ITrueCallback;
@@ -25,6 +26,8 @@ import com.truecaller.android.sdk.TrueError;
 import com.truecaller.android.sdk.TrueProfile;
 import com.truecaller.android.sdk.TruecallerSDK;
 import com.truecaller.android.sdk.TruecallerSdkScope;
+
+import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 public class TruecallerModule extends ReactContextBaseJavaModule implements ITrueCallback, ActivityEventListener {
     private final ReactContext mReactContext;
@@ -38,11 +41,6 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     @Override
     public String getName() {
         return "TruecallerModule";
-    }
-
-    @ReactMethod
-    public void isUsable(Callback boolCallBack) {
-        boolCallBack.invoke(TruecallerSDK.getInstance().isUsable());
     }
 
     private int getConsentMode(String mode) {
@@ -161,26 +159,26 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     }
 
     @ReactMethod
-    public void initializeClient(ReadableMap options, Promise promise) {
+    public void initializeClient(ReadableMap options, final Promise promise) {
         TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, this)
-                .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : null))
+                .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : ""))
                 .privacyPolicyUrl(options.getString("privacyLink"))
                 .termsOfServiceUrl(options.getString("tncLink"))
-                .loginTextPrefix(this.getLoginPrefix(options.hasKey("loginPrefix") ? options.getString("loginPrefix") : null))
-                .loginTextSuffix(this.getLoginSuffix(options.hasKey("loginSuffix") ? options.getString("loginSuffix") : null))
-                .ctaTextPrefix(this.getCtaPrefix(options.hasKey("ctaPrefix") ? options.getString("ctaPrefix") : null))
+                .loginTextPrefix(this.getLoginPrefix(options.hasKey("loginPrefix") ? options.getString("loginPrefix") : ""))
+                .loginTextSuffix(this.getLoginSuffix(options.hasKey("loginSuffix") ? options.getString("loginSuffix") : ""))
+                .ctaTextPrefix(this.getCtaPrefix(options.hasKey("ctaPrefix") ? options.getString("ctaPrefix") : ""))
                 .buttonShapeOptions(TruecallerSdkScope.BUTTON_SHAPE_ROUNDED)
-                .footerType(this.getFooterCta(options.hasKey("footerCta") ? options.getString("footerCta") : null))
-                .consentTitleOption(this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : null))
-                .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getString("sdkOption") : null));
+                .footerType(this.getFooterCta(options.hasKey("footerCta") ? options.getString("footerCta") : ""))
+                .consentTitleOption(this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : ""))
+                .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getString("sdkOption") : ""));
         if (options.hasKey("buttonColor")) {
             trueScopeBuilder.buttonColor(Color.parseColor(options.getString("buttonColor")));
         }
         if (options.hasKey("buttonTextColor")) {
             trueScopeBuilder.buttonTextColor(Color.parseColor(options.getString("buttonTextColor")));
         }
-
         TruecallerSDK.init(trueScopeBuilder.build());
+
         promise.resolve(null);
     }
 
@@ -191,10 +189,12 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
 
     @ReactMethod
     public void requestTrueProfile() {
-        Activity activity = getCurrentActivity();
-        if (activity != null) {
-            TruecallerSDK.getInstance().getUserProfile((FragmentActivity) activity);
-        }
+        runOnUiThread(() -> {
+            Activity activity = getCurrentActivity();
+            if (activity != null) {
+                TruecallerSDK.getInstance().getUserProfile((FragmentActivity) activity);
+            }
+        });
     }
 
     @Override
@@ -243,10 +243,15 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Activity activity = getCurrentActivity();
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (activity != null && TruecallerSDK.getInstance() != null && TruecallerSDK.getInstance().isUsable()) {
             TruecallerSDK.getInstance().onActivityResultObtained((FragmentActivity) activity, resultCode, data);
         }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+
     }
 }
