@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1e21daf3-ae03-4ff5-9ede-e7bc56ada0d0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aa/truecaller/TruecallerModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aa/truecaller/TruecallerModule.java" afterDir="false" />
     </list>
@@ -63,10 +65,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="533" y="136" key="#com.intellij.ide.util.MemberChooser" timestamp="1602515438059">
+    <state x="533" y="136" key="#com.intellij.ide.util.MemberChooser" timestamp="1602590429462">
       <screen x="0" y="23" width="1440" height="793" />
     </state>
-    <state x="533" y="136" key="#com.intellij.ide.util.MemberChooser/0.23.1440.793@0.23.1440.793" timestamp="1602515438059" />
+    <state x="533" y="136" key="#com.intellij.ide.util.MemberChooser/0.23.1440.793@0.23.1440.793" timestamp="1602590429462" />
     <state x="221" y="58" key="SettingsEditor" timestamp="1602510706954">
       <screen x="0" y="23" width="1440" height="793" />
     </state>

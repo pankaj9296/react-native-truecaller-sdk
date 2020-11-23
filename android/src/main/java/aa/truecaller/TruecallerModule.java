@@ -161,7 +161,7 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
     }
 
     @ReactMethod
-    public void initializeClient(ReadableMap options) {
+    public void initializeClient(ReadableMap options, Promise promise) {
         TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, this)
                 .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : null))
                 .privacyPolicyUrl(options.getString("privacyLink"))
@@ -181,11 +181,12 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
         }
 
         TruecallerSDK.init(trueScopeBuilder.build());
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void isUsable(final Promise callback) {
-        callback.resolve(TruecallerSDK.getInstance().isUsable());
+    public void isUsable(final Promise promise) {
+        promise.resolve(TruecallerSDK.getInstance().isUsable());
     }
 
     @ReactMethod
@@ -242,7 +243,6 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Activity activity = getCurrentActivity();
         if (activity != null && TruecallerSDK.getInstance() != null && TruecallerSDK.getInstance().isUsable()) {
