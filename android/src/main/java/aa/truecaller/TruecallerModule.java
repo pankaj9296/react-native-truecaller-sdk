@@ -245,8 +245,12 @@ public class TruecallerModule extends ReactContextBaseJavaModule implements ITru
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-        if (activity != null && TruecallerSDK.getInstance() != null && TruecallerSDK.getInstance().isUsable()) {
-            TruecallerSDK.getInstance().onActivityResultObtained((FragmentActivity) activity, resultCode, data);
+        try {
+            if (activity != null && TruecallerSDK.getInstance() != null && TruecallerSDK.getInstance().isUsable()) {
+                TruecallerSDK.getInstance().onActivityResultObtained((FragmentActivity) activity, resultCode, data);
+            }
+        } catch (RuntimeException e) {
+            // ignore this
         }
     }
 
