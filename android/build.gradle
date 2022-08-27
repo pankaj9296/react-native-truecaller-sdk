@@ -1,31 +1,39 @@
 buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:3.5.3")
-    }
-}
-
-allprojects {
-    repositories {
-        mavenLocal()
-        jcenter()
-        maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
+    if (project == rootProject) {
+        repositories {
+            google()
+            jcenter()
+            mavenCentral()
         }
-        google()
+
+        dependencies {
+            classpath 'com.android.tools.build:gradle:7.0.4'
+        }
+    } else {
+        repositories {
+            google()
+            jcenter()
+            mavenCentral()
+        }
     }
 }
 
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$rootDir/../node_modules/react-native/android"
+    }
+    google()
+}
 
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVerion 31
-    
+    compileSdkVersion 32
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
@@ -38,8 +46,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
-
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
