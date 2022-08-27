@@ -30,7 +30,7 @@ const withJcenter: ConfigPlugin = (config) => {
 const withTruecallerSdk: ConfigPlugin = (config) => {
   return withAppBuildGradle(config, async (config) => {
     config.modResults.contents = config.modResults.contents.replace(
-      'dependencies {',
+      /dependencies {/,
       `$&
         implementation 'com.truecaller.android.sdk:truecaller-sdk:2.7.0'
     `

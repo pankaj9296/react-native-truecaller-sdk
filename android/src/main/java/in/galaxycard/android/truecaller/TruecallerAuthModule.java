@@ -31,7 +31,7 @@ import static com.truecaller.android.sdk.clients.VerificationDataBundle.KEY_OTP;
 public class TruecallerAuthModule extends ReactContextBaseJavaModule {
   private Promise promise = null;
 
-  public TruecallerModule(ReactApplicationContext reactContext) {
+  public TruecallerAuthModule(ReactApplicationContext reactContext) {
     super(reactContext);
     reactContext.addActivityEventListener(mActivityEventListener);
   }
