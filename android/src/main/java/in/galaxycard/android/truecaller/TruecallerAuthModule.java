@@ -1,23 +1,24 @@
 package in.galaxycard.android.truecaller;
 
 import android.app.Activity;
-import android.widget.Toast;
+import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-import android.content.Intent;
+
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.BaseActivityEventListener;
-import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.truecaller.android.sdk.ITrueCallback;
 import com.truecaller.android.sdk.TrueError;
 import com.truecaller.android.sdk.TrueException;
@@ -26,14 +27,15 @@ import com.truecaller.android.sdk.TruecallerSDK;
 import com.truecaller.android.sdk.TruecallerSdkScope;
 import com.truecaller.android.sdk.clients.VerificationCallback;
 import com.truecaller.android.sdk.clients.VerificationDataBundle;
-import static com.truecaller.android.sdk.clients.VerificationDataBundle.KEY_OTP;
 
 public class TruecallerAuthModule extends ReactContextBaseJavaModule {
+  private final ReactContext mReactContext;
   private Promise promise = null;
 
   public TruecallerAuthModule(ReactApplicationContext reactContext) {
     super(reactContext);
     reactContext.addActivityEventListener(mActivityEventListener);
+    mReactContext = reactContext;
   }
 
   private int getConsentMode(String mode) {
@@ -145,7 +147,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
   }
 
   private int getSdkOptions(Boolean useOtp) {
-    if (useOtp == true) {
+    if (useOtp) {
       return TruecallerSdkScope.SDK_OPTION_WITH_OTP;
     }
     return TruecallerSdkScope.SDK_OPTION_WITHOUT_OTP;
@@ -153,7 +155,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
 
   @ReactMethod(isBlockingSynchronousMethod = true)
   public void initializeClient(ReadableMap options) {
-    TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, this)
+    TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, sdkCallback)
         .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : ""))
         .privacyPolicyUrl(options.getString("privacyLink"))
         .termsOfServiceUrl(options.getString("tncLink"))
@@ -164,7 +166,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         .footerType(this.getFooterCta(options.hasKey("footerCta") ? options.getString("footerCta") : ""))
         .consentTitleOption(
             this.getConsentTitle(options.hasKey("consentTitle") ? options.getString("consentTitle") : ""))
-        .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") ? options.getBoolean("sdkOption") : false));
+        .sdkOptions(this.getSdkOptions(options.hasKey("sdkOption") && options.getBoolean("sdkOption")));
     if (options.hasKey("buttonColor")) {
       trueScopeBuilder.buttonColor(Color.parseColor(options.getString("buttonColor")));
     }
@@ -213,6 +215,15 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       if (promise != null) {
         String errorReason = null;
         switch (trueError.getErrorType()) {
+          case TrueError.ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER:
+            errorReason = "ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER";
+            break;
+          case TrueError.ERROR_TYPE_PARTNER_INFO_NULL:
+            errorReason = "ERROR_TYPE_PARTNER_INFO_NULL";
+            break;
+          case TrueError.ERROR_TYPE_USER_DENIED_WHILE_LOADING:
+            errorReason = "ERROR_TYPE_USER_DENIED_WHILE_LOADING";
+            break;
           case TrueError.ERROR_TYPE_INTERNAL:
             errorReason = "ERROR_TYPE_INTERNAL";
             break;
@@ -262,8 +273,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     @Override
     public void onVerificationRequired(TrueError trueError) {
       // The statement below can be ignored incase of one-tap flow integration
-      TruecallerSDK.getInstance().requestVerification("IN", "PHONE-NUMBER-STRING", apiCallback,
-          (FragmentActivity) getCurrentActivity());
+      if (getCurrentActivity() != null) {
+        TruecallerSDK.getInstance().requestVerification("IN", "PHONE-NUMBER-STRING", apiCallback,
+            (FragmentActivity) getCurrentActivity());
+      }
     }
   };
 
@@ -307,6 +320,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     }
   };
 
+  @NonNull
   @Override
   public String getName() {
     return "TruecallerAuthModule";
@@ -317,9 +331,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     if (TruecallerSDK.getInstance() != null) {
       promise.resolve(TruecallerSDK.getInstance().isUsable());
     } else {
-      WritableMap map = Arguments.createMap();
-      map.putString("error", "ERROR_TYPE_NOT_SUPPORTED");
-      promise.reject(map);
+      promise.reject(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
     }
   }
 
@@ -327,20 +339,22 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
   public void authenticate(Promise promise) {
     this.promise = promise;
     try {
-      if (TruecallerSDK.getInstance() != null) {
-        if (TruecallerSDK.getInstance().isUsable()) {
-          TruecallerSDK.getInstance().getUserProfile((FragmentActivity) getCurrentActivity());
-        }
-        // For One-Tap implementation : The isUsable method would return true incase
-        // where the truecaller app is installed and logged in else it will return
-        // false.
-        // For Full-Stack implementation : The isUsable method would always return true
-        // as now the SDK can be used to verify both truecaller and non-truecaller users
+      if (getCurrentActivity() != null) {
+        if (TruecallerSDK.getInstance() != null) {
+          if (TruecallerSDK.getInstance().isUsable()) {
+            TruecallerSDK.getInstance().getUserProfile((FragmentActivity) getCurrentActivity());
+          }
+          // For One-Tap implementation : The isUsable method would return true incase
+          // where the truecaller app is installed and logged in else it will return
+          // false.
+          // For Full-Stack implementation : The isUsable method would always return true
+          // as now the SDK can be used to verify both truecaller and non-truecaller users
 
+        } else {
+          this.promise.reject(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
+        }
       } else {
-        WritableMap map = Arguments.createMap();
-        map.putString("error", "ERROR_TYPE_NOT_SUPPORTED");
-        this.promise.reject(map);
+        this.promise.reject(new Exception("ERROR_TYPE_NO_ACTIVITY"));
       }
     } catch (Exception e) {
       this.promise.reject(e);
