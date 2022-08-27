@@ -24,6 +24,8 @@ allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    compileSdkVerion 31
+    
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
