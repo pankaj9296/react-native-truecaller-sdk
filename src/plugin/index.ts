@@ -32,7 +32,7 @@ const withTruecallerSdk: ConfigPlugin = (config) => {
     config.modResults.contents = config.modResults.contents.replace(
       'dependencies {',
       `$&
-        implementation 'com.truecaller.android.sdk:truecaller-sdk:2.6.0'
+        implementation 'com.truecaller.android.sdk:truecaller-sdk:2.7.0'
     `
     );
     return config;

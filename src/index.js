@@ -1,67 +1,45 @@
-import { NativeEventEmitter, NativeModules } from "react-native";
-const EventEmitter = new NativeEventEmitter(NativeModules.TruecallerModule);
-const RCTTruecaller = NativeModules.TruecallerModule;
-
-const TRUECALLER = {};
-
-// Call this method to initialize client before using it.
-// Pass in configuration params as required.
-TRUECALLER.initializeClient = async (options) => {
-  return RCTTruecaller.initializeClient(options);
-};
-
-// TRUECALLER.initializeClientIOS = (appKey,appLink) =>
-// {
-//     return RCTTruecaller.initializeClientIOS(appKey,appLink);
-// };
-
-// Request consent from the user to fetch his profile data
-TRUECALLER.requestTrueProfile = () => {
-  return RCTTruecaller.requestTrueProfile();
-};
-
-// Whether the app is installed and logged in
-TRUECALLER.isUsable = async () => {
-  return RCTTruecaller.isUsable();
-};
-
-// Use this method to add listeners for when the user accepts or rejects the consent request
-// The event will be one of TrueProfileResponse or TrueProfileResponseError.
-// The callback will be passed a single parameter which will be the user profile if the user accepts the request
-// or an error object if the user rejects the request.
-TRUECALLER.on = (event, callback) => {
-  if (TRUECALLER_EVENT[event] !== undefined) {
-    throw new Error(
-      `Invalid TRUECALLER_EVENT event subscription, use import {TRUECALLER_EVENT} from 'react-native-truecaller-sdk' to avoid typo`
-    );
-  }
-  return EventEmitter.addListener(event, callback);
-};
-
-// Callback event success and failure types
-export const TRUECALLER_EVENT = {
-  TrueProfileResponse: "profileSuccessResponse",
-  TrueProfileResponseError: "profileErrorResponse",
-};
+import { NativeModules } from 'react-native';
+const { TruecallerAuthModule } = NativeModules;
 
 // Constants for configuration
 export const TRUECALLER_CONSENT_MODE = {
-  Popup: "CONSENT_MODE_POPUP",
-  FullScreen: "CONSENT_MODE_FULLSCREEN",
+  Popup: 'CONSENT_MODE_POPUP',
+  FullScreen: 'CONSENT_MODE_FULLSCREEN',
+  BottomSheet: 'CONSENT_MODE_BOTTOMSHEET',
+};
+
+export const TRUECALLER_CONSENT_PREFIX = {
+  Continue: 'LOGIN_TEXT_PREFIX_TO_CONTINUE',
+  Proceed: 'LOGIN_TEXT_PREFIX_TO_PROCEED',
+  GetStarted: LOGIN_TEXT_PREFIX_TO_GET_STARTED,
+};
+
+export const TRUECALLER_CONSENT_SUFFIX = {
+  Login: 'LOGIN_TEXT_SUFFIX_PLEASE_LOGIN',
+  Signup: 'LOGIN_TEXT_SUFFIX_PLEASE_SIGNUP',
+  Register: 'LOGIN_TEXT_SUFFIX_PLEASE_REGISTER',
+  SignIn: 'LOGIN_TEXT_SUFFIX_PLEASE_SIGN_IN',
+  Verify: 'LOGIN_TEXT_SUFFIX_PLEASE_VERIFY_MOBILE_NO',
+};
+
+export const TRUECALLER_CTA = {
+  Use: 'CTA_TEXT_PREFIX_USE',
+  Proceed: 'CTA_TEXT_PREFIX_PROCEED_WITH',
+  Continue: 'CTA_TEXT_PREFIX_CONTINUE_WITH',
 };
 
 export const TRUECALLER_CONSENT_TITLE = {
-  Login: "SDK_CONSENT_TITLE_LOG_IN",
-  SignUp: "SDK_CONSENT_TITLE_SIGN_UP",
-  SignIn: "SDK_CONSENT_TITLE_SIGN_IN",
-  Verify: "SDK_CONSENT_TITLE_VERIFY",
-  Register: "SDK_CONSENT_TITLE_REGISTER",
-  GetStarted: "SDK_CONSENT_TITLE_GET_STARTED",
+  Login: 'SDK_CONSENT_TITLE_LOG_IN',
+  SignUp: 'SDK_CONSENT_TITLE_SIGN_UP',
+  SignIn: 'SDK_CONSENT_TITLE_SIGN_IN',
+  Verify: 'SDK_CONSENT_TITLE_VERIFY',
+  Register: 'SDK_CONSENT_TITLE_REGISTER',
+  GetStarted: 'SDK_CONSENT_TITLE_GET_STARTED',
 };
 
 export const TRUECALLER_FOOTER_TYPE = {
-  Skip: "FOOTER_TYPE_SKIP",
-  Continue: "FOOTER_TYPE_CONTINUE",
+  Skip: 'FOOTER_TYPE_SKIP',
+  Continue: 'FOOTER_TYPE_CONTINUE',
 };
 
-export default TRUECALLER;
+export default TruecallerAuthModule;
