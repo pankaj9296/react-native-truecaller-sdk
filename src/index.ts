@@ -42,6 +42,20 @@ export const TRUECALLER_FOOTER_TYPE = {
   Continue: 'FOOTER_TYPE_CONTINUE',
 };
 
+export interface TrueOptions {
+  consentMode?: string;
+  privacyLink?: string;
+  tncLink?: string;
+  loginPrefix?: string;
+  loginSuffix?: string;
+  ctaPrefix?: string;
+  footerCta?: string;
+  consentTitle?: string;
+  sdkOption?: boolean;
+  buttonColor?: string;
+  buttonTextColor?: string;
+}
+
 export interface TrueProfile {
   successful: boolean;
   firstName: string;
@@ -69,6 +83,8 @@ export interface TrueProfile {
 }
 
 export default {
+  initializeClient: (options: TrueOptions): void =>
+    TruecallerAuthModule.initializeClient(options),
   authenticate: (): Promise<TrueProfile> => TruecallerAuthModule.authenticate(),
   isUsable: (): Promise<boolean> => TruecallerAuthModule.isUsable(),
 };
