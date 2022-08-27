@@ -151,7 +151,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     return TruecallerSdkScope.SDK_OPTION_WITHOUT_OTP;
   }
 
-  @ReactMethod
+  @ReactMethod(isBlockingSynchronousMethod = true)
   public void initializeClient(ReadableMap options) {
     TruecallerSdkScope.Builder trueScopeBuilder = new TruecallerSdkScope.Builder(mReactContext, this)
         .consentMode(this.getConsentMode(options.hasKey("consentMode") ? options.getString("consentMode") : ""))
