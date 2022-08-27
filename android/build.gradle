@@ -43,5 +43,5 @@ android {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation "com.truecaller.android.sdk:truecaller-sdk:2.4.0"
+    implementation "com.truecaller.android.sdk:truecaller-sdk:2.6.0"
 }
