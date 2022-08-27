@@ -29,12 +29,12 @@ const withJcenter: ConfigPlugin = (config) => {
 
 const withTruecallerSdk: ConfigPlugin = (config) => {
   return withAppBuildGradle(config, async (config) => {
-    config.modResults.contents = config.modResults.contents.replace(
-      /dependencies {/,
-      `$&
-        implementation 'com.truecaller.android.sdk:truecaller-sdk:2.6.0'
-    `
-    );
+    // config.modResults.contents = config.modResults.contents.replace(
+    //   /dependencies {/,
+    //   `$&
+    //     implementation 'com.truecaller.android.sdk:truecaller-sdk:2.6.0'
+    // `
+    // );
     return config;
   });
 };
