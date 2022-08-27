@@ -1,6 +1,6 @@
 {
   "name": "@galaxycard/react-native-truecaller-sdk",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "React Native module for Truecaller integration",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
