@@ -11,7 +11,7 @@ export const TRUECALLER_CONSENT_MODE = {
 export const TRUECALLER_CONSENT_PREFIX = {
   Continue: 'LOGIN_TEXT_PREFIX_TO_CONTINUE',
   Proceed: 'LOGIN_TEXT_PREFIX_TO_PROCEED',
-  GetStarted: LOGIN_TEXT_PREFIX_TO_GET_STARTED,
+  GetStarted: 'LOGIN_TEXT_PREFIX_TO_GET_STARTED',
 };
 
 export const TRUECALLER_CONSENT_SUFFIX = {
@@ -42,4 +42,33 @@ export const TRUECALLER_FOOTER_TYPE = {
   Continue: 'FOOTER_TYPE_CONTINUE',
 };
 
-export default TruecallerAuthModule;
+export interface TrueProfile {
+  successful: boolean;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  gender: string;
+  street: string;
+  city: string;
+  zipcode: string;
+  countryCode: string;
+  facebookId: string;
+  twitterId: string;
+  email: string;
+  url: string;
+  avatarUrl: string;
+  isVerified: boolean;
+  isAmbassador: boolean;
+  companyName: string;
+  jobTitle: string;
+  payload: string;
+  signature: string;
+  signatureAlgorithm: string;
+  requestNonce: string;
+  isBusiness: boolean;
+}
+
+export default {
+  authenticate: (): Promise<TrueProfile> => TruecallerAuthModule.authenticate(),
+  isUsable: (): Promise<boolean> => TruecallerAuthModule.isUsable(),
+};
