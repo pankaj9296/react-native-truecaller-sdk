@@ -41,14 +41,40 @@ const withTruecallerSdk: ConfigPlugin = (config) => {
 
 const withMetadata: ConfigPlugin<{
   truecaller: { apiKey: string };
+  allowOtp: boolean;
 }> = (
   config,
   props: {
+    allowOtp: boolean;
     truecaller: { apiKey: string };
   }
 ) => {
   return withAndroidManifest(config, async (config) => {
     const mainApplication = getMainApplicationOrThrow(config.modResults);
+    if (props.allowOtp) {
+      config.modResults.manifest['uses-permission'] =
+        config.modResults.manifest['uses-permission'] || [];
+      config.modResults.manifest['uses-permission'].push({
+        $: {
+          'android:name': 'android.permission.READ_PHONE_STATE',
+        },
+      });
+      config.modResults.manifest['uses-permission'].push({
+        $: {
+          'android:name': 'android.permission.READ_CALL_LOG',
+        },
+      });
+      config.modResults.manifest['uses-permission'].push({
+        $: {
+          'android:name': 'android.permission.ANSWER_PHONE_CALLS',
+        },
+      });
+      config.modResults.manifest['uses-permission'].push({
+        $: {
+          'android:name': 'android.permission.CALL_PHONE',
+        },
+      });
+    }
     addMetaDataItemToMainApplication(
       mainApplication,
       'com.truecaller.android.sdk.PartnerKey',
@@ -60,7 +86,14 @@ const withMetadata: ConfigPlugin<{
 
 const withGalaxyCardUtils: ConfigPlugin<{
   truecaller: { apiKey: string };
-}> = (config, props: { truecaller: { apiKey: string } }) => {
+  allowOtp: boolean;
+}> = (
+  config,
+  props: {
+    truecaller: { apiKey: string };
+    allowOtp: boolean;
+  }
+) => {
   return withPlugins(config, [
     withJcenter,
     withTruecallerSdk,
