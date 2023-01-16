@@ -84,7 +84,7 @@ const withMetadata: ConfigPlugin<{
   });
 };
 
-const withGalaxyCardUtils: ConfigPlugin<{
+const withTruecallerUtils: ConfigPlugin<{
   truecaller: { apiKey: string };
   allowOtp: boolean;
 }> = (
@@ -101,5 +101,5 @@ const withGalaxyCardUtils: ConfigPlugin<{
   ]);
 };
 
-const pak = require('@galaxycard/react-native-truecaller-sdk/package.json');
-export default createRunOncePlugin(withGalaxyCardUtils, pak.name, pak.version);
+const pak = require('@pankaj9296/react-native-truecaller-sdk/package.json');
+export default createRunOncePlugin(withTruecallerUtils, pak.name, pak.version);

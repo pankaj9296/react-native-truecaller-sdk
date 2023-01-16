@@ -1,5 +1,5 @@
 {
-  "name": "@galaxycard/react-native-truecaller-sdk",
+  "name": "@pankaj9296/react-native-truecaller-sdk",
   "version": "0.0.13",
   "description": "React Native module for Truecaller integration",
   "main": "lib/commonjs/index",
@@ -36,7 +36,7 @@
     "expo:prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module"
   },
-  "repository": "https://github.com/galaxycard/react-native-truecaller-sdk",
+  "repository": "https://github.com/pankaj9296/react-native-truecaller-sdk",
   "keywords": [
     "android",
     "truecaller",
@@ -51,9 +51,9 @@
   "author": "Amit Kumar",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/galaxycard/react-native-truecaller-sdk/issues"
+    "url": "https://github.com/pankaj9296/react-native-truecaller-sdk/issues"
   },
-  "homepage": "https://github.com/galaxycard/react-native-truecaller-sdk#readme",
+  "homepage": "https://github.com/pankaj9296/react-native-truecaller-sdk#readme",
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
     "@expo/config-types": "^45.0.0",

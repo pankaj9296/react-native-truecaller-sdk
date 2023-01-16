@@ -1,4 +1,4 @@
-package in.galaxycard.android.truecaller;
+package in.pankaj9296.android.truecaller;
 
 import android.app.Activity;
 import android.content.Intent;

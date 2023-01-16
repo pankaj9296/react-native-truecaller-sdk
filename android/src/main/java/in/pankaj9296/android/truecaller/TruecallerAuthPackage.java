@@ -1,4 +1,4 @@
-package in.galaxycard.android.truecaller;
+package in.pankaj9296.android.truecaller;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
