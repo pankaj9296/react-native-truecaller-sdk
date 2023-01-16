@@ -1,5 +1,6 @@
 # react-native-truecaller-sdk
 
+
 A react native module for Truecaller SDK Integration. Truecaller can be used as an alternate method of authenticating users for login/signup. This module exposes all the functionality available in the android-sdk for use in your react native app. (Note: Supports only android for now)
 
   
