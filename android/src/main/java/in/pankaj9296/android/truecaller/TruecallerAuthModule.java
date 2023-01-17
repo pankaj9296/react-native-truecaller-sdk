@@ -19,6 +19,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.truecaller.android.sdk.ITrueCallback;
 import com.truecaller.android.sdk.TrueError;
 import com.truecaller.android.sdk.TrueException;
@@ -342,7 +343,13 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       if (getCurrentActivity() != null) {
         if (TruecallerSDK.getInstance() != null) {
           if (TruecallerSDK.getInstance().isUsable()) {
-            TruecallerSDK.getInstance().getUserProfile((FragmentActivity) getCurrentActivity());
+            UiThreadUtil.runOnUiThread(new Runnable()
+            {
+              @Override  public void run()
+              {
+                TruecallerSDK.getInstance().getUserProfile((FragmentActivity) getCurrentActivity());
+              }
+            });
           }
           // For One-Tap implementation : The isUsable method would return true incase
           // where the truecaller app is installed and logged in else it will return
