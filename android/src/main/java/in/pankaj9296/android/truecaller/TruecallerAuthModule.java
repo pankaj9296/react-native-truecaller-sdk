@@ -337,19 +337,18 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
   }
   
   @ReactMethod
-  public void requestVerification(PHONE_NUMBER_STRING, cb) {
+  public void requestVerification(Promise promise) {
     if (TruecallerSDK.getInstance() != null) {
-      try {
-        TruecallerSDK.getInstance().requestVerification("IN", PHONE_NUMBER_STRING, apiCallback, (FragmentActivity) getCurrentActivity());
-        cb('Verifying...');
-      } catch (RuntimeException e) {
-         cb(e);
+      try{
+        TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback, (FragmentActivity) getCurrentActivity());
+        promise.resolve("requestVerification Completed");
+      }catch (RuntimeException e){
+        promise.reject(e);
       }
     } else {
-      cb(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
+      promise.reject(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
     }
   }
-  
 
   @ReactMethod
   public void authenticate(Promise promise) {

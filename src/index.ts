@@ -86,6 +86,6 @@ export default {
   initializeClient: (options: TrueOptions): void =>
     TruecallerAuthModule.initializeClient(options),
   authenticate: (): Promise<TrueProfile> => TruecallerAuthModule.authenticate(),
-  requestVerification: (phonenumber: any, promise: any): void => TruecallerAuthModule.requestVerification(phonenumber, promise),
+  requestVerification: (): Promise<TrueProfile> => TruecallerAuthModule.requestVerification(),
   isUsable: (): Promise<boolean> => TruecallerAuthModule.isUsable(),
 };
