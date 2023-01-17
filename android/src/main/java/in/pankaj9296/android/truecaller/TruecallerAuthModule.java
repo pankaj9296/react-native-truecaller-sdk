@@ -275,7 +275,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     public void onVerificationRequired(TrueError trueError) {
       // The statement below can be ignored incase of one-tap flow integration
       if (getCurrentActivity() != null) {
-        TruecallerSDK.getInstance().requestVerification("IN", "PHONE-NUMBER-STRING", apiCallback,
+        TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback,
             (FragmentActivity) getCurrentActivity());
       }
     }
@@ -295,7 +295,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       }
       if (requestCode == VerificationCallback.TYPE_MISSED_CALL_RECEIVED) {
 
-        TrueProfile profile = new TrueProfile.Builder("USER-FIRST-NAME", "USER-LAST-NAME").build();
+        TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
         TruecallerSDK.getInstance().verifyMissedCall(profile, apiCallback);
       }
       if (requestCode == VerificationCallback.TYPE_OTP_INITIATED) {
@@ -306,8 +306,8 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_RECEIVED) {
-        TrueProfile profile = new TrueProfile.Builder("USER-FIRST-NAME", "USER-LAST-NAME").build();
-        TruecallerSDK.getInstance().verifyOtp(profile, "OTP-ENTERED-BY-THE-USER", apiCallback);
+        TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
+        TruecallerSDK.getInstance().verifyOtp(profile, "123456", apiCallback);
       }
       if (requestCode == VerificationCallback.TYPE_VERIFICATION_COMPLETE) {
       }
@@ -335,6 +335,21 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       promise.reject(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
     }
   }
+  
+  @ReactMethod
+  public void requestVerification(PHONE_NUMBER_STRING, cb) {
+    if (TruecallerSDK.getInstance() != null) {
+      try {
+        TruecallerSDK.getInstance().requestVerification("IN", PHONE_NUMBER_STRING, apiCallback, (FragmentActivity) getCurrentActivity());
+        cb('Verifying...');
+      } catch (RuntimeException e) {
+         cb(e);
+      }
+    } else {
+      cb(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
+    }
+  }
+  
 
   @ReactMethod
   public void authenticate(Promise promise) {
@@ -350,6 +365,8 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
                 TruecallerSDK.getInstance().getUserProfile((FragmentActivity) getCurrentActivity());
               }
             });
+          } else {
+            this.promise.reject(new Exception("ERROR_NOT_INSTALLED_NOT_LOGGED_IN"));
           }
           // For One-Tap implementation : The isUsable method would return true incase
           // where the truecaller app is installed and logged in else it will return
