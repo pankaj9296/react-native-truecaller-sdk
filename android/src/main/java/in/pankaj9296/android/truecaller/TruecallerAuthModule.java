@@ -32,6 +32,9 @@ import com.truecaller.android.sdk.clients.VerificationDataBundle;
 public class TruecallerAuthModule extends ReactContextBaseJavaModule {
   private final ReactContext mReactContext;
   private Promise promise = null;
+  private String firstName = null;
+  private String lastName = null;
+  private String phoneNumber = null;
 
   public TruecallerAuthModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -275,8 +278,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     public void onVerificationRequired(TrueError trueError) {
       // The statement below can be ignored incase of one-tap flow integration
       if (getCurrentActivity() != null) {
-        TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback,
-            (FragmentActivity) getCurrentActivity());
+        if (promise != null) {
+          promise.resolve('onVerificationRequired');
+        }
+//         TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback,
+//             (FragmentActivity) getCurrentActivity());
       }
     }
   };
@@ -295,7 +301,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       }
       if (requestCode == VerificationCallback.TYPE_MISSED_CALL_RECEIVED) {
 
-        TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
+        TrueProfile profile = new TrueProfile.Builder(this.firstName, this.lastName).build();
         TruecallerSDK.getInstance().verifyMissedCall(profile, apiCallback);
       }
       if (requestCode == VerificationCallback.TYPE_OTP_INITIATED) {
@@ -306,18 +312,25 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_RECEIVED) {
-        TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
-        TruecallerSDK.getInstance().verifyOtp(profile, "123456", apiCallback);
+        // TODO get name and number in request verification as well
+//         TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
+//         TruecallerSDK.getInstance().verifyOtp(profile, "123456", apiCallback);
       }
       if (requestCode == VerificationCallback.TYPE_VERIFICATION_COMPLETE) {
       }
       if (requestCode == VerificationCallback.TYPE_PROFILE_VERIFIED_BEFORE) {
+      }
+      if (promise != null) {
+        promise.resolve(VerificationCallback.TYPE_MISSED_CALL_INITIATED);
       }
     }
 
     @Override
     public void onRequestFailure(final int requestCode, @NonNull final TrueException e) {
       // Write the Exception Part
+      if (promise != null) {
+        promise.resolve('onRequestFailure');
+      }
     }
   };
 
@@ -337,11 +350,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
   }
   
   @ReactMethod
-  public void requestVerification(Promise promise) {
+  public void requestVerification(String firstName, String lastName, String phoneNumber, Promise promise) {
+    this.promise = promise;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.phoneNumber = phoneNumber;
+            
+    // get first name, last name, phone number 10 digit here
     if (TruecallerSDK.getInstance() != null) {
       try{
-        TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback, (FragmentActivity) getCurrentActivity());
-        promise.resolve("requestVerification Completed");
+        TruecallerSDK.getInstance().requestVerification("IN", phoneNumber, apiCallback, (FragmentActivity) getCurrentActivity());
       }catch (RuntimeException e){
         promise.reject(e);
       }
@@ -349,7 +367,24 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       promise.reject(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
     }
   }
-
+  
+  @ReactMethod
+  public void requestOtpVerification(String Otp, Promise promise) {
+    this.promise = promise;
+    // get otp here
+    if (TruecallerSDK.getInstance() != null) {
+      try{
+        // get profile from above
+        TrueProfile profile = new TrueProfile.Builder(this.firstName, this.lastName).build();
+        TruecallerSDK.getInstance().verifyOtp(profile, Otp, apiCallback);
+      }catch (RuntimeException e){
+        promise.reject(e);
+      }
+    } else {
+      promise.reject(new Exception("ERROR_TYPE_NOT_SUPPORTED"));
+    }
+  }
+  
   @ReactMethod
   public void authenticate(Promise promise) {
     this.promise = promise;
