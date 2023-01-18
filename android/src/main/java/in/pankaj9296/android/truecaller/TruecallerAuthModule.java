@@ -422,7 +422,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     public void onRequestFailure(final int requestCode, @NonNull final TrueException e) {
       // Write the Exception Part
       if (promise != null) {
-        String errorReason = TrueException.getExceptionMessage();
+        String errorReason = e.getExceptionMessage();
         WritableMap map = Arguments.createMap();
         map.putString("method", "onRequestFailure");
         map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_REQUEST_FAILED");
