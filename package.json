@@ -27,7 +27,7 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "pods": "cd example && RCT_NEW_ARCH_ENABLED=1 pod-install --quiet",
     "prepare": "bob build",
-    "release": "release-it",
+    "release": "release-it --ci",
     "expo:build": "expo-module build",
     "expo:clean": "expo-module clean",
     "expo:lint": "expo-module lint",
