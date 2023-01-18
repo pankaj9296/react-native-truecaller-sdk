@@ -284,8 +284,8 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putString("method", "onVerificationRequired");
           promise.resolve(map);
         }
-//         TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback,
-//             (FragmentActivity) getCurrentActivity());
+        // TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback,
+        // (FragmentActivity) getCurrentActivity());
       }
     }
   };
@@ -303,9 +303,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         }
       }
       if (requestCode == VerificationCallback.TYPE_MISSED_CALL_RECEIVED) {
-
-        TrueProfile profile = new TrueProfile.Builder(this.firstName, this.lastName).build();
-        TruecallerSDK.getInstance().verifyMissedCall(profile, apiCallback);
+        if (firstName != null && lastName != null) {
+          TrueProfile profile = new TrueProfile.Builder(firstName, lastName).build();
+          TruecallerSDK.getInstance().verifyMissedCall(profile, apiCallback);
+        }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_INITIATED) {
 
@@ -316,8 +317,8 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       }
       if (requestCode == VerificationCallback.TYPE_OTP_RECEIVED) {
         // TODO get name and number in request verification as well
-//         TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
-//         TruecallerSDK.getInstance().verifyOtp(profile, "123456", apiCallback);
+        // TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
+        // TruecallerSDK.getInstance().verifyOtp(profile, "123456", apiCallback);
       }
       if (requestCode == VerificationCallback.TYPE_VERIFICATION_COMPLETE) {
       }
@@ -386,8 +387,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     if (TruecallerSDK.getInstance() != null) {
       try{
         // get profile from above
-        TrueProfile profile = new TrueProfile.Builder(this.firstName, this.lastName).build();
-        TruecallerSDK.getInstance().verifyOtp(profile, Otp, apiCallback);
+        if (firstName != null && lastName != null) {
+          TrueProfile profile = new TrueProfile.Builder(firstName, lastName).build();
+          TruecallerSDK.getInstance().verifyOtp(profile, Otp, apiCallback);
+        }
       }catch (RuntimeException e){
         promise.reject(e);
       }
