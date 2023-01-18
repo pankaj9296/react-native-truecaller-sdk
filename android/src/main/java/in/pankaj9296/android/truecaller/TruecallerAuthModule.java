@@ -392,10 +392,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       }
       if (requestCode == VerificationCallback.TYPE_OTP_RECEIVED) {
         
+        String OTP = "";
+        if (extras != null) {
+          OTP = extras.getString(VerificationDataBundle.KEY_OTP);
+        }
+        
         WritableMap map = Arguments.createMap();
         map.putBoolean("successful", true);
         map.putString("method", "onRequestSuccess");
         map.putString("type", "TYPE_OTP_RECEIVED");
+        map.putString("otp", OTP);
         
         WritableMap eventMap = map.copy();
         sendEvent("TruecallerEvents", eventMap);
@@ -406,10 +412,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       }
       if (requestCode == VerificationCallback.TYPE_VERIFICATION_COMPLETE) {
         
+        String accessToken = "";
+        if (extras != null) {
+          accessToken = extras.getString(VerificationDataBundle.KEY_ACCESS_TOKEN);
+        }
+        
         WritableMap map = Arguments.createMap();
         map.putBoolean("successful", true);
         map.putString("method", "onRequestSuccess");
         map.putString("type", "TYPE_VERIFICATION_COMPLETE");
+        map.putString("accessToken", accessToken);
         
         WritableMap eventMap = map.copy();
         sendEvent("TruecallerEvents", eventMap);
@@ -419,11 +431,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         }
       }
       if (requestCode == VerificationCallback.TYPE_PROFILE_VERIFIED_BEFORE) {
+        String accessToken = "";
+        if (extras != null) {
+          accessToken = extras.getProfile().accessToken;
+        }
         
         WritableMap map = Arguments.createMap();
         map.putBoolean("successful", true);
         map.putString("method", "onRequestSuccess");
         map.putString("type", "TYPE_PROFILE_VERIFIED_BEFORE");
+        map.putString("accessToken", accessToken);
         
         WritableMap eventMap = map.copy();
         sendEvent("TruecallerEvents", eventMap);
