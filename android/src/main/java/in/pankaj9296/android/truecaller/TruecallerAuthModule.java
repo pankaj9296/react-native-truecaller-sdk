@@ -269,6 +269,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
             break;
         }
         WritableMap map = Arguments.createMap();
+        map.putString("method", "onFailureProfileShared");
         map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
         promise.resolve(map);
       }
@@ -279,13 +280,62 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       // The statement below can be ignored incase of one-tap flow integration
       if (getCurrentActivity() != null) {
         if (promise != null) {
+          String errorReason = null;
+          switch (trueError.getErrorType()) {
+            case TrueError.ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER:
+              errorReason = "ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER";
+              break;
+            case TrueError.ERROR_TYPE_PARTNER_INFO_NULL:
+              errorReason = "ERROR_TYPE_PARTNER_INFO_NULL";
+              break;
+            case TrueError.ERROR_TYPE_USER_DENIED_WHILE_LOADING:
+              errorReason = "ERROR_TYPE_USER_DENIED_WHILE_LOADING";
+              break;
+            case TrueError.ERROR_TYPE_INTERNAL:
+              errorReason = "ERROR_TYPE_INTERNAL";
+              break;
+            case TrueError.ERROR_TYPE_NETWORK:
+              errorReason = "ERROR_TYPE_NETWORK";
+              break;
+            case TrueError.ERROR_TYPE_USER_DENIED:
+              errorReason = "ERROR_TYPE_USER_DENIED";
+              break;
+            case TrueError.ERROR_PROFILE_NOT_FOUND:
+              errorReason = "ERROR_TYPE_UNAUTHORIZED_PARTNER";
+              break;
+            case TrueError.ERROR_TYPE_UNAUTHORIZED_USER:
+              errorReason = "ERROR_TYPE_UNAUTHORIZED_USER";
+              break;
+            case TrueError.ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY:
+              errorReason = "ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY";
+              break;
+            case TrueError.ERROR_TYPE_TRUESDK_TOO_OLD:
+              errorReason = "ERROR_TYPE_TRUESDK_TOO_OLD";
+              break;
+            case TrueError.ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION:
+              errorReason = "ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION";
+              break;
+            case TrueError.ERROR_TYPE_RESPONSE_SIGNATURE_MISMATCH:
+              errorReason = "ERROR_TYPE_RESPONSE_SIGNATURE_MISSMATCH";
+              break;
+            case TrueError.ERROR_TYPE_REQUEST_NONCE_MISMATCH:
+              errorReason = "ERROR_TYPE_REQUEST_NONCE_MISSMATCH";
+              break;
+            case TrueError.ERROR_TYPE_INVALID_ACCOUNT_STATE:
+              errorReason = "ERROR_TYPE_INVALID_ACCOUNT_STATE";
+              break;
+            case TrueError.ERROR_TYPE_TC_NOT_INSTALLED:
+              errorReason = "ERROR_TYPE_TC_NOT_INSTALLED";
+              break;
+            case TrueError.ERROR_TYPE_ACTIVITY_NOT_FOUND:
+              errorReason = "ERROR_TYPE_ACTIVITY_NOT_FOUND";
+              break;
+          }
           WritableMap map = Arguments.createMap();
-          map.putBoolean("successful", true);
           map.putString("method", "onVerificationRequired");
+          map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_VERIFICATION_REQUIRED");
           promise.resolve(map);
         }
-        // TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback,
-        // (FragmentActivity) getCurrentActivity());
       }
     }
   };
@@ -301,11 +351,25 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         if (extras != null) {
           extras.getString(VerificationDataBundle.KEY_TTL);
         }
+        if (promise != null) {
+          WritableMap map = Arguments.createMap();
+          map.putBoolean("successful", true);
+          map.putString("method", "onRequestSuccess");
+          map.putString("type", "TYPE_MISSED_CALL_INITIATED");
+          promise.resolve(map);
+        }
       }
       if (requestCode == VerificationCallback.TYPE_MISSED_CALL_RECEIVED) {
         if (firstName != null && lastName != null) {
           TrueProfile profile = new TrueProfile.Builder(firstName, lastName).build();
           TruecallerSDK.getInstance().verifyMissedCall(profile, apiCallback);
+        }
+        if (promise != null) {
+          WritableMap map = Arguments.createMap();
+          map.putBoolean("successful", true);
+          map.putString("method", "onRequestSuccess");
+          map.putString("type", "TYPE_MISSED_CALL_RECEIVED");
+          promise.resolve(map);
         }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_INITIATED) {
@@ -314,22 +378,43 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         if (extras != null) {
           extras.getString(VerificationDataBundle.KEY_TTL);
         }
+        if (promise != null) {
+          WritableMap map = Arguments.createMap();
+          map.putBoolean("successful", true);
+          map.putString("method", "onRequestSuccess");
+          map.putString("type", "TYPE_OTP_INITIATED");
+          promise.resolve(map);
+        }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_RECEIVED) {
         // TODO get name and number in request verification as well
         // TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
         // TruecallerSDK.getInstance().verifyOtp(profile, "123456", apiCallback);
+        if (promise != null) {
+          WritableMap map = Arguments.createMap();
+          map.putBoolean("successful", true);
+          map.putString("method", "onRequestSuccess");
+          map.putString("type", "TYPE_OTP_RECEIVED");
+          promise.resolve(map);
+        }
       }
       if (requestCode == VerificationCallback.TYPE_VERIFICATION_COMPLETE) {
+        if (promise != null) {
+          WritableMap map = Arguments.createMap();
+          map.putBoolean("successful", true);
+          map.putString("method", "onRequestSuccess");
+          map.putString("type", "TYPE_VERIFICATION_COMPLETE");
+          promise.resolve(map);
+        }
       }
       if (requestCode == VerificationCallback.TYPE_PROFILE_VERIFIED_BEFORE) {
-      }
-      if (promise != null) {
-        WritableMap map = Arguments.createMap();
-        map.putBoolean("successful", true);
-        map.putString("method", "onRequestSuccess");
-        map.putInt("requestCode", requestCode);
-        promise.resolve(map);
+        if (promise != null) {
+          WritableMap map = Arguments.createMap();
+          map.putBoolean("successful", true);
+          map.putString("method", "onRequestSuccess");
+          map.putString("type", "TYPE_PROFILE_VERIFIED_BEFORE");
+          promise.resolve(map);
+        }
       }
     }
 
@@ -337,10 +422,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     public void onRequestFailure(final int requestCode, @NonNull final TrueException e) {
       // Write the Exception Part
       if (promise != null) {
+        String errorReason = TrueException.getExceptionMessage();
         WritableMap map = Arguments.createMap();
-        map.putBoolean("successful", false);
         map.putString("method", "onRequestFailure");
-        map.putInt("requestCode", requestCode);
+        map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_REQUEST_FAILED");
+        map.putInt("code", requestCode);
         promise.resolve(map);
       }
     }
