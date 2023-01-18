@@ -370,8 +370,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
             
     // get first name, last name, phone number 10 digit here
     if (TruecallerSDK.getInstance() != null) {
-      try{
-      if (TruecallerSDK.getInstance().isUsable()) {
+      try {
         UiThreadUtil.runOnUiThread(new Runnable()
         {
           @Override  public void run()
@@ -404,7 +403,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
             }
           });
         }
-      }catch (RuntimeException e){
+      } catch (RuntimeException e) {
         promise.reject(e);
       }
     } else {
