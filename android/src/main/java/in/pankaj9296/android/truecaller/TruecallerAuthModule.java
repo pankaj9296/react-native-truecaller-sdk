@@ -279,7 +279,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       // The statement below can be ignored incase of one-tap flow integration
       if (getCurrentActivity() != null) {
         if (promise != null) {
-          promise.resolve('onVerificationRequired');
+          WritableMap map = Arguments.createMap();
+          map.putBoolean("successful", true);
+          map.putString("method", "onVerificationRequired");
+          promise.resolve(map);
         }
 //         TruecallerSDK.getInstance().requestVerification("IN", "+919479419296", apiCallback,
 //             (FragmentActivity) getCurrentActivity());
@@ -321,7 +324,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       if (requestCode == VerificationCallback.TYPE_PROFILE_VERIFIED_BEFORE) {
       }
       if (promise != null) {
-        promise.resolve(VerificationCallback.TYPE_MISSED_CALL_INITIATED);
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", true);
+        map.putString("method", "onRequestSuccess");
+        map.putInt("requestCode", requestCode);
+        promise.resolve(map);
       }
     }
 
@@ -329,7 +336,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     public void onRequestFailure(final int requestCode, @NonNull final TrueException e) {
       // Write the Exception Part
       if (promise != null) {
-        promise.resolve('onRequestFailure');
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", false);
+        map.putString("method", "onRequestFailure");
+        map.putInt("requestCode", requestCode);
+        promise.resolve(map);
       }
     }
   };
