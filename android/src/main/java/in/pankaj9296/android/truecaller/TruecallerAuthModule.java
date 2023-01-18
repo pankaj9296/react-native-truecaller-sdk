@@ -280,60 +280,9 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       // The statement below can be ignored incase of one-tap flow integration
       if (getCurrentActivity() != null) {
         if (promise != null) {
-          String errorReason = null;
-          switch (trueError.getErrorType()) {
-            case TrueError.ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER:
-              errorReason = "ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER";
-              break;
-            case TrueError.ERROR_TYPE_PARTNER_INFO_NULL:
-              errorReason = "ERROR_TYPE_PARTNER_INFO_NULL";
-              break;
-            case TrueError.ERROR_TYPE_USER_DENIED_WHILE_LOADING:
-              errorReason = "ERROR_TYPE_USER_DENIED_WHILE_LOADING";
-              break;
-            case TrueError.ERROR_TYPE_INTERNAL:
-              errorReason = "ERROR_TYPE_INTERNAL";
-              break;
-            case TrueError.ERROR_TYPE_NETWORK:
-              errorReason = "ERROR_TYPE_NETWORK";
-              break;
-            case TrueError.ERROR_TYPE_USER_DENIED:
-              errorReason = "ERROR_TYPE_USER_DENIED";
-              break;
-            case TrueError.ERROR_PROFILE_NOT_FOUND:
-              errorReason = "ERROR_TYPE_UNAUTHORIZED_PARTNER";
-              break;
-            case TrueError.ERROR_TYPE_UNAUTHORIZED_USER:
-              errorReason = "ERROR_TYPE_UNAUTHORIZED_USER";
-              break;
-            case TrueError.ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY:
-              errorReason = "ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY";
-              break;
-            case TrueError.ERROR_TYPE_TRUESDK_TOO_OLD:
-              errorReason = "ERROR_TYPE_TRUESDK_TOO_OLD";
-              break;
-            case TrueError.ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION:
-              errorReason = "ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION";
-              break;
-            case TrueError.ERROR_TYPE_RESPONSE_SIGNATURE_MISMATCH:
-              errorReason = "ERROR_TYPE_RESPONSE_SIGNATURE_MISSMATCH";
-              break;
-            case TrueError.ERROR_TYPE_REQUEST_NONCE_MISMATCH:
-              errorReason = "ERROR_TYPE_REQUEST_NONCE_MISSMATCH";
-              break;
-            case TrueError.ERROR_TYPE_INVALID_ACCOUNT_STATE:
-              errorReason = "ERROR_TYPE_INVALID_ACCOUNT_STATE";
-              break;
-            case TrueError.ERROR_TYPE_TC_NOT_INSTALLED:
-              errorReason = "ERROR_TYPE_TC_NOT_INSTALLED";
-              break;
-            case TrueError.ERROR_TYPE_ACTIVITY_NOT_FOUND:
-              errorReason = "ERROR_TYPE_ACTIVITY_NOT_FOUND";
-              break;
-          }
           WritableMap map = Arguments.createMap();
           map.putString("method", "onVerificationRequired");
-          map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_VERIFICATION_REQUIRED");
+          map.putString("error", "ERROR_TYPE_VERIFICATION_REQUIRED");
           promise.resolve(map);
         }
       }
