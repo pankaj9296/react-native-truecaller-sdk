@@ -209,36 +209,36 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     @Override
     public void onSuccessProfileShared(@NonNull final TrueProfile trueProfile) {
 
+      WritableMap map = Arguments.createMap();
+      map.putBoolean("successful", true);
+      map.putString("firstName", trueProfile.firstName);
+      map.putString("lastName", trueProfile.lastName);
+      map.putString("phoneNumber", trueProfile.phoneNumber);
+      map.putString("gender", trueProfile.gender);
+      map.putString("street", trueProfile.street);
+      map.putString("city", trueProfile.city);
+      map.putString("zipcode", trueProfile.zipcode);
+      map.putString("countryCode", trueProfile.countryCode);
+      map.putString("facebookId", trueProfile.facebookId);
+      map.putString("twitterId", trueProfile.twitterId);
+      map.putString("email", trueProfile.email);
+      map.putString("url", trueProfile.url);
+      map.putString("avatarUrl", trueProfile.avatarUrl);
+      map.putBoolean("isVerified", trueProfile.isTrueName);
+      map.putBoolean("isAmbassador", trueProfile.isAmbassador);
+      map.putString("companyName", trueProfile.companyName);
+      map.putString("jobTitle", trueProfile.jobTitle);
+      map.putString("payload", trueProfile.payload);
+      map.putString("signature", trueProfile.signature);
+      map.putString("signatureAlgorithm", trueProfile.signatureAlgorithm);
+      map.putString("requestNonce", trueProfile.requestNonce);
+      map.putBoolean("isBusiness", trueProfile.isBusiness);
+      map.putString("type", "TYPE_SUCCESS_PROFILE_SHARED");
+      
+      WritableMap eventMap = map.copy();
+      sendEvent("TruecallerEvents", eventMap);
+      
       if (promise != null) {
-        WritableMap map = Arguments.createMap();
-        map.putBoolean("successful", true);
-        map.putString("firstName", trueProfile.firstName);
-        map.putString("lastName", trueProfile.lastName);
-        map.putString("phoneNumber", trueProfile.phoneNumber);
-        map.putString("gender", trueProfile.gender);
-        map.putString("street", trueProfile.street);
-        map.putString("city", trueProfile.city);
-        map.putString("zipcode", trueProfile.zipcode);
-        map.putString("countryCode", trueProfile.countryCode);
-        map.putString("facebookId", trueProfile.facebookId);
-        map.putString("twitterId", trueProfile.twitterId);
-        map.putString("email", trueProfile.email);
-        map.putString("url", trueProfile.url);
-        map.putString("avatarUrl", trueProfile.avatarUrl);
-        map.putBoolean("isVerified", trueProfile.isTrueName);
-        map.putBoolean("isAmbassador", trueProfile.isAmbassador);
-        map.putString("companyName", trueProfile.companyName);
-        map.putString("jobTitle", trueProfile.jobTitle);
-        map.putString("payload", trueProfile.payload);
-        map.putString("signature", trueProfile.signature);
-        map.putString("signatureAlgorithm", trueProfile.signatureAlgorithm);
-        map.putString("requestNonce", trueProfile.requestNonce);
-        map.putBoolean("isBusiness", trueProfile.isBusiness);
-        map.putString("type", "TYPE_SUCCESS_PROFILE_SHARED");
-        
-        WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
-        
         promise.resolve(map);
       }
     }
@@ -246,66 +246,67 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     @Override
     public void onFailureProfileShared(@NonNull final TrueError trueError) {
       Log.d("TruecallerAuthModule", Integer.toString(trueError.getErrorType()));
+      
+      String errorReason = null;
+      switch (trueError.getErrorType()) {
+        case TrueError.ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER:
+          errorReason = "ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER";
+          break;
+        case TrueError.ERROR_TYPE_PARTNER_INFO_NULL:
+          errorReason = "ERROR_TYPE_PARTNER_INFO_NULL";
+          break;
+        case TrueError.ERROR_TYPE_USER_DENIED_WHILE_LOADING:
+          errorReason = "ERROR_TYPE_USER_DENIED_WHILE_LOADING";
+          break;
+        case TrueError.ERROR_TYPE_INTERNAL:
+          errorReason = "ERROR_TYPE_INTERNAL";
+          break;
+        case TrueError.ERROR_TYPE_NETWORK:
+          errorReason = "ERROR_TYPE_NETWORK";
+          break;
+        case TrueError.ERROR_TYPE_USER_DENIED:
+          errorReason = "ERROR_TYPE_USER_DENIED";
+          break;
+        case TrueError.ERROR_PROFILE_NOT_FOUND:
+          errorReason = "ERROR_TYPE_UNAUTHORIZED_PARTNER";
+          break;
+        case TrueError.ERROR_TYPE_UNAUTHORIZED_USER:
+          errorReason = "ERROR_TYPE_UNAUTHORIZED_USER";
+          break;
+        case TrueError.ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY:
+          errorReason = "ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY";
+          break;
+        case TrueError.ERROR_TYPE_TRUESDK_TOO_OLD:
+          errorReason = "ERROR_TYPE_TRUESDK_TOO_OLD";
+          break;
+        case TrueError.ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION:
+          errorReason = "ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION";
+          break;
+        case TrueError.ERROR_TYPE_RESPONSE_SIGNATURE_MISMATCH:
+          errorReason = "ERROR_TYPE_RESPONSE_SIGNATURE_MISSMATCH";
+          break;
+        case TrueError.ERROR_TYPE_REQUEST_NONCE_MISMATCH:
+          errorReason = "ERROR_TYPE_REQUEST_NONCE_MISSMATCH";
+          break;
+        case TrueError.ERROR_TYPE_INVALID_ACCOUNT_STATE:
+          errorReason = "ERROR_TYPE_INVALID_ACCOUNT_STATE";
+          break;
+        case TrueError.ERROR_TYPE_TC_NOT_INSTALLED:
+          errorReason = "ERROR_TYPE_TC_NOT_INSTALLED";
+          break;
+        case TrueError.ERROR_TYPE_ACTIVITY_NOT_FOUND:
+          errorReason = "ERROR_TYPE_ACTIVITY_NOT_FOUND";
+          break;
+      }
+      WritableMap map = Arguments.createMap();
+      map.putString("method", "onFailureProfileShared");
+      map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
+      map.putString("type", "ERROR_TYPE_PROFILE_SHARE_FAILED");
+      
+      WritableMap eventMap = map.copy();
+      sendEvent("TruecallerEvents", eventMap);
+      
       if (promise != null) {
-        String errorReason = null;
-        switch (trueError.getErrorType()) {
-          case TrueError.ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER:
-            errorReason = "ERROR_TYPE_CONTINUE_WITH_DIFFERENT_NUMBER";
-            break;
-          case TrueError.ERROR_TYPE_PARTNER_INFO_NULL:
-            errorReason = "ERROR_TYPE_PARTNER_INFO_NULL";
-            break;
-          case TrueError.ERROR_TYPE_USER_DENIED_WHILE_LOADING:
-            errorReason = "ERROR_TYPE_USER_DENIED_WHILE_LOADING";
-            break;
-          case TrueError.ERROR_TYPE_INTERNAL:
-            errorReason = "ERROR_TYPE_INTERNAL";
-            break;
-          case TrueError.ERROR_TYPE_NETWORK:
-            errorReason = "ERROR_TYPE_NETWORK";
-            break;
-          case TrueError.ERROR_TYPE_USER_DENIED:
-            errorReason = "ERROR_TYPE_USER_DENIED";
-            break;
-          case TrueError.ERROR_PROFILE_NOT_FOUND:
-            errorReason = "ERROR_TYPE_UNAUTHORIZED_PARTNER";
-            break;
-          case TrueError.ERROR_TYPE_UNAUTHORIZED_USER:
-            errorReason = "ERROR_TYPE_UNAUTHORIZED_USER";
-            break;
-          case TrueError.ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY:
-            errorReason = "ERROR_TYPE_TRUECALLER_CLOSED_UNEXPECTEDLY";
-            break;
-          case TrueError.ERROR_TYPE_TRUESDK_TOO_OLD:
-            errorReason = "ERROR_TYPE_TRUESDK_TOO_OLD";
-            break;
-          case TrueError.ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION:
-            errorReason = "ERROR_TYPE_POSSIBLE_REQ_CODE_COLLISION";
-            break;
-          case TrueError.ERROR_TYPE_RESPONSE_SIGNATURE_MISMATCH:
-            errorReason = "ERROR_TYPE_RESPONSE_SIGNATURE_MISSMATCH";
-            break;
-          case TrueError.ERROR_TYPE_REQUEST_NONCE_MISMATCH:
-            errorReason = "ERROR_TYPE_REQUEST_NONCE_MISSMATCH";
-            break;
-          case TrueError.ERROR_TYPE_INVALID_ACCOUNT_STATE:
-            errorReason = "ERROR_TYPE_INVALID_ACCOUNT_STATE";
-            break;
-          case TrueError.ERROR_TYPE_TC_NOT_INSTALLED:
-            errorReason = "ERROR_TYPE_TC_NOT_INSTALLED";
-            break;
-          case TrueError.ERROR_TYPE_ACTIVITY_NOT_FOUND:
-            errorReason = "ERROR_TYPE_ACTIVITY_NOT_FOUND";
-            break;
-        }
-        WritableMap map = Arguments.createMap();
-        map.putString("method", "onFailureProfileShared");
-        map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
-        map.putString("type", "ERROR_TYPE_PROFILE_SHARE_FAILED");
-        
-        WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
-        
         promise.resolve(map);
       }
     }
@@ -314,15 +315,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     public void onVerificationRequired(TrueError trueError) {
       // The statement below can be ignored incase of one-tap flow integration
       if (getCurrentActivity() != null) {
+        
+        WritableMap map = Arguments.createMap();
+        map.putString("method", "onVerificationRequired");
+        map.putString("error", "ERROR_TYPE_VERIFICATION_REQUIRED");
+        map.putString("type", "ERROR_TYPE_VERIFICATION_REQUIRED");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         if (promise != null) {
-          WritableMap map = Arguments.createMap();
-          map.putString("method", "onVerificationRequired");
-          map.putString("error", "ERROR_TYPE_VERIFICATION_REQUIRED");
-          map.putString("type", "ERROR_TYPE_VERIFICATION_REQUIRED");
-          
-          WritableMap eventMap = map.copy();
-          sendEvent("TruecallerEvents", eventMap);
-          
           promise.resolve(map);
         }
       }
@@ -339,15 +341,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         if (extras != null) {
           extras.getString(VerificationDataBundle.KEY_TTL);
         }
+        
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", true);
+        map.putString("method", "onRequestSuccess");
+        map.putString("type", "TYPE_MISSED_CALL_INITIATED");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         if (promise != null) {
-          WritableMap map = Arguments.createMap();
-          map.putBoolean("successful", true);
-          map.putString("method", "onRequestSuccess");
-          map.putString("type", "TYPE_MISSED_CALL_INITIATED");
-          
-          WritableMap eventMap = map.copy();
-          sendEvent("TruecallerEvents", eventMap);
-          
           promise.resolve(map);
         }
       }
@@ -356,15 +359,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           TrueProfile profile = new TrueProfile.Builder(firstName, lastName).build();
           TruecallerSDK.getInstance().verifyMissedCall(profile, apiCallback);
         }
+        
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", true);
+        map.putString("method", "onRequestSuccess");
+        map.putString("type", "TYPE_MISSED_CALL_RECEIVED");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         if (promise != null) {
-          WritableMap map = Arguments.createMap();
-          map.putBoolean("successful", true);
-          map.putString("method", "onRequestSuccess");
-          map.putString("type", "TYPE_MISSED_CALL_RECEIVED");
-          
-          WritableMap eventMap = map.copy();
-          sendEvent("TruecallerEvents", eventMap);
-          
           promise.resolve(map);
         }
       }
@@ -373,54 +377,58 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         if (extras != null) {
           extras.getString(VerificationDataBundle.KEY_TTL);
         }
+        
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", true);
+        map.putString("method", "onRequestSuccess");
+        map.putString("type", "TYPE_OTP_INITIATED");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         if (promise != null) {
-          WritableMap map = Arguments.createMap();
-          map.putBoolean("successful", true);
-          map.putString("method", "onRequestSuccess");
-          map.putString("type", "TYPE_OTP_INITIATED");
-          
-          WritableMap eventMap = map.copy();
-          sendEvent("TruecallerEvents", eventMap);
-          
           promise.resolve(map);
         }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_RECEIVED) {
+        
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", true);
+        map.putString("method", "onRequestSuccess");
+        map.putString("type", "TYPE_OTP_RECEIVED");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         if (promise != null) {
-          WritableMap map = Arguments.createMap();
-          map.putBoolean("successful", true);
-          map.putString("method", "onRequestSuccess");
-          map.putString("type", "TYPE_OTP_RECEIVED");
-          
-          WritableMap eventMap = map.copy();
-          sendEvent("TruecallerEvents", eventMap);
-          
           promise.resolve(map);
         }
       }
       if (requestCode == VerificationCallback.TYPE_VERIFICATION_COMPLETE) {
+        
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", true);
+        map.putString("method", "onRequestSuccess");
+        map.putString("type", "TYPE_VERIFICATION_COMPLETE");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+          
         if (promise != null) {
-          WritableMap map = Arguments.createMap();
-          map.putBoolean("successful", true);
-          map.putString("method", "onRequestSuccess");
-          map.putString("type", "TYPE_VERIFICATION_COMPLETE");
-          
-          WritableMap eventMap = map.copy();
-          sendEvent("TruecallerEvents", eventMap);
-          
           promise.resolve(map);
         }
       }
       if (requestCode == VerificationCallback.TYPE_PROFILE_VERIFIED_BEFORE) {
+        
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("successful", true);
+        map.putString("method", "onRequestSuccess");
+        map.putString("type", "TYPE_PROFILE_VERIFIED_BEFORE");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         if (promise != null) {
-          WritableMap map = Arguments.createMap();
-          map.putBoolean("successful", true);
-          map.putString("method", "onRequestSuccess");
-          map.putString("type", "TYPE_PROFILE_VERIFIED_BEFORE");
-          
-          WritableMap eventMap = map.copy();
-          sendEvent("TruecallerEvents", eventMap);
-          
           promise.resolve(map);
         }
       }
@@ -429,17 +437,18 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     @Override
     public void onRequestFailure(final int requestCode, @NonNull final TrueException e) {
       // Write the Exception Part
+      
+      String errorReason = e.getExceptionMessage();
+      WritableMap map = Arguments.createMap();
+      map.putString("method", "onRequestFailure");
+      map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
+      map.putString("type", "ERROR_TYPE_REQUEST_FAILED");
+      map.putInt("code", requestCode);
+      
+      WritableMap eventMap = map.copy();
+      sendEvent("TruecallerEvents", eventMap);
+      
       if (promise != null) {
-        String errorReason = e.getExceptionMessage();
-        WritableMap map = Arguments.createMap();
-        map.putString("method", "onRequestFailure");
-        map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
-        map.putString("type", "ERROR_TYPE_REQUEST_FAILED");
-        map.putInt("code", requestCode);
-        
-        WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
-        
         promise.resolve(map);
       }
     }
