@@ -371,7 +371,14 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     // get first name, last name, phone number 10 digit here
     if (TruecallerSDK.getInstance() != null) {
       try{
-        TruecallerSDK.getInstance().requestVerification("IN", phoneNumber, apiCallback, (FragmentActivity) getCurrentActivity());
+      if (TruecallerSDK.getInstance().isUsable()) {
+        UiThreadUtil.runOnUiThread(new Runnable()
+        {
+          @Override  public void run()
+          {
+            TruecallerSDK.getInstance().requestVerification("IN", phoneNumber, apiCallback, (FragmentActivity) getCurrentActivity());
+          }
+        });
       }catch (RuntimeException e){
         promise.reject(e);
       }
@@ -388,8 +395,14 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       try{
         // get profile from above
         if (firstName != null && lastName != null) {
-          TrueProfile profile = new TrueProfile.Builder(firstName, lastName).build();
-          TruecallerSDK.getInstance().verifyOtp(profile, Otp, apiCallback);
+          UiThreadUtil.runOnUiThread(new Runnable()
+          {
+            @Override  public void run()
+            {
+              TrueProfile profile = new TrueProfile.Builder(firstName, lastName).build();
+              TruecallerSDK.getInstance().verifyOtp(profile, Otp, apiCallback);
+            }
+          });
         }
       }catch (RuntimeException e){
         promise.reject(e);
