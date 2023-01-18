@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules } from 'react-native';
 const { TruecallerAuthModule } = NativeModules;
 
 // Constants for configuration
@@ -54,6 +54,7 @@ export interface TrueOptions {
   sdkOption?: boolean;
   buttonColor?: string;
   buttonTextColor?: string;
+  eventListener?: (event: any) => void;
 }
 
 export interface TrueProfile {
@@ -83,8 +84,18 @@ export interface TrueProfile {
 }
 
 export default {
-  initializeClient: (options: TrueOptions): void =>
-    TruecallerAuthModule.initializeClient(options),
+  initializeClient: (options: TrueOptions): void => {
+    
+    TruecallerAuthModule.initializeClient(options);
+
+    if (options && options.eventListener && typeof options.eventListener === 'function') {
+      const eventEmitter = new NativeEventEmitter(TruecallerAuthModule);
+      eventEmitter.addListener('TruecallerEvents', (event: any) => {
+        // @ts-ignore
+        options.eventListener(event);
+      });
+    }
+  },
   authenticate: (): Promise<TrueProfile> => TruecallerAuthModule.authenticate(),
   requestVerification: (firstName: String, lastName: String, phoneNumber: String): Promise<TrueProfile> => TruecallerAuthModule.requestVerification(firstName, lastName, phoneNumber),
   requestOtpVerification: (Otp: String): Promise<TrueProfile> => TruecallerAuthModule.requestVerification(Otp),

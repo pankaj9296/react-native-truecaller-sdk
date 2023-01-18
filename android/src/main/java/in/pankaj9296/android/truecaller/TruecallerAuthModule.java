@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -51,6 +52,12 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       default:
         return TruecallerSdkScope.CONSENT_MODE_POPUP;
     }
+  }
+  
+  private void sendEvent(String eventName, @Nullable WritableMap params) {
+    mReactContext
+      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+      .emit(eventName, params);
   }
 
   private int getLoginPrefix(String loginPrefix) {
@@ -209,6 +216,8 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("signatureAlgorithm", trueProfile.signatureAlgorithm);
         map.putString("requestNonce", trueProfile.requestNonce);
         map.putBoolean("isBusiness", trueProfile.isBusiness);
+        map.putString("type", "TYPE_SUCCESS_PROFILE_SHARED");
+        sendEvent("TruecallerEvents", map);
         promise.resolve(map);
       }
     }
@@ -271,6 +280,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         WritableMap map = Arguments.createMap();
         map.putString("method", "onFailureProfileShared");
         map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
+        sendEvent("TruecallerEvents", map);
         promise.resolve(map);
       }
     }
@@ -283,20 +293,20 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           WritableMap map = Arguments.createMap();
           map.putString("method", "onVerificationRequired");
           map.putString("error", "ERROR_TYPE_VERIFICATION_REQUIRED");
+          sendEvent("TruecallerEvents", map);
           promise.resolve(map);
         }
       }
     }
   };
 
-  // Callback below can be ignored incase of one-tap only integration
+  // Callback below can be ignored encase of one-tap only integration
 
   final VerificationCallback apiCallback = new VerificationCallback() {
     @Override
     public void onRequestSuccess(int requestCode, @Nullable VerificationDataBundle extras) {
       if (requestCode == VerificationCallback.TYPE_MISSED_CALL_INITIATED) {
-
-        // Retrieving the TTL for missedcall
+        // Retrieving the TTL for missed-call
         if (extras != null) {
           extras.getString(VerificationDataBundle.KEY_TTL);
         }
@@ -305,6 +315,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_MISSED_CALL_INITIATED");
+          sendEvent("TruecallerEvents", map);
           promise.resolve(map);
         }
       }
@@ -318,11 +329,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_MISSED_CALL_RECEIVED");
+          sendEvent("TruecallerEvents", map);
           promise.resolve(map);
         }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_INITIATED) {
-
         // Retrieving the TTL for otp
         if (extras != null) {
           extras.getString(VerificationDataBundle.KEY_TTL);
@@ -332,18 +343,17 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_OTP_INITIATED");
+          sendEvent("TruecallerEvents", map);
           promise.resolve(map);
         }
       }
       if (requestCode == VerificationCallback.TYPE_OTP_RECEIVED) {
-        // TODO get name and number in request verification as well
-        // TrueProfile profile = new TrueProfile.Builder("Pankaj", "Patidar").build();
-        // TruecallerSDK.getInstance().verifyOtp(profile, "123456", apiCallback);
         if (promise != null) {
           WritableMap map = Arguments.createMap();
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_OTP_RECEIVED");
+          sendEvent("TruecallerEvents", map);
           promise.resolve(map);
         }
       }
@@ -353,6 +363,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_VERIFICATION_COMPLETE");
+          sendEvent("TruecallerEvents", map);
           promise.resolve(map);
         }
       }
@@ -362,6 +373,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_PROFILE_VERIFIED_BEFORE");
+          sendEvent("TruecallerEvents", map);
           promise.resolve(map);
         }
       }
@@ -376,6 +388,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("method", "onRequestFailure");
         map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_REQUEST_FAILED");
         map.putInt("code", requestCode);
+        sendEvent("TruecallerEvents", map);
         promise.resolve(map);
       }
     }
