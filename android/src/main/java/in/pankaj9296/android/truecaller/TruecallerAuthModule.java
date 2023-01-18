@@ -36,7 +36,8 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
   private String firstName = null;
   private String lastName = null;
   private String phoneNumber = null;
-
+  private int listenerCount = 0;
+  
   public TruecallerAuthModule(ReactApplicationContext reactContext) {
     super(reactContext);
     reactContext.addActivityEventListener(mActivityEventListener);
@@ -59,7 +60,24 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
       .emit(eventName, params);
   }
-
+  
+  @ReactMethod
+  public void addListener(String eventName) {
+    if (listenerCount == 0) {
+      // Set up any upstream listeners or background tasks as necessary
+    }
+  
+    listenerCount += 1;
+  }
+  
+  @ReactMethod
+  public void removeListeners(Integer count) {
+    listenerCount -= count;
+    if (listenerCount == 0) {
+      // Remove upstream listeners, stop unnecessary background tasks
+    }
+  }
+  
   private int getLoginPrefix(String loginPrefix) {
     switch (loginPrefix) {
       case "LOGIN_TEXT_PREFIX_TO_CONTINUE":
@@ -217,7 +235,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("requestNonce", trueProfile.requestNonce);
         map.putBoolean("isBusiness", trueProfile.isBusiness);
         map.putString("type", "TYPE_SUCCESS_PROFILE_SHARED");
-        sendEvent("TruecallerEvents", map);
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         promise.resolve(map);
       }
     }
@@ -280,7 +301,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         WritableMap map = Arguments.createMap();
         map.putString("method", "onFailureProfileShared");
         map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
-        sendEvent("TruecallerEvents", map);
+        map.putString("type", "ERROR_TYPE_PROFILE_SHARE_FAILED");
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         promise.resolve(map);
       }
     }
@@ -293,7 +318,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           WritableMap map = Arguments.createMap();
           map.putString("method", "onVerificationRequired");
           map.putString("error", "ERROR_TYPE_VERIFICATION_REQUIRED");
-          sendEvent("TruecallerEvents", map);
+          map.putString("type", "ERROR_TYPE_VERIFICATION_REQUIRED");
+          
+          WritableMap eventMap = map.copy();
+          sendEvent("TruecallerEvents", eventMap);
+          
           promise.resolve(map);
         }
       }
@@ -315,7 +344,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_MISSED_CALL_INITIATED");
-          sendEvent("TruecallerEvents", map);
+          
+          WritableMap eventMap = map.copy();
+          sendEvent("TruecallerEvents", eventMap);
+          
           promise.resolve(map);
         }
       }
@@ -329,7 +361,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_MISSED_CALL_RECEIVED");
-          sendEvent("TruecallerEvents", map);
+          
+          WritableMap eventMap = map.copy();
+          sendEvent("TruecallerEvents", eventMap);
+          
           promise.resolve(map);
         }
       }
@@ -343,7 +378,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_OTP_INITIATED");
-          sendEvent("TruecallerEvents", map);
+          
+          WritableMap eventMap = map.copy();
+          sendEvent("TruecallerEvents", eventMap);
+          
           promise.resolve(map);
         }
       }
@@ -353,7 +391,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_OTP_RECEIVED");
-          sendEvent("TruecallerEvents", map);
+          
+          WritableMap eventMap = map.copy();
+          sendEvent("TruecallerEvents", eventMap);
+          
           promise.resolve(map);
         }
       }
@@ -363,7 +404,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_VERIFICATION_COMPLETE");
-          sendEvent("TruecallerEvents", map);
+          
+          WritableMap eventMap = map.copy();
+          sendEvent("TruecallerEvents", eventMap);
+          
           promise.resolve(map);
         }
       }
@@ -373,7 +417,10 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
           map.putBoolean("successful", true);
           map.putString("method", "onRequestSuccess");
           map.putString("type", "TYPE_PROFILE_VERIFIED_BEFORE");
-          sendEvent("TruecallerEvents", map);
+          
+          WritableMap eventMap = map.copy();
+          sendEvent("TruecallerEvents", eventMap);
+          
           promise.resolve(map);
         }
       }
@@ -386,9 +433,13 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         String errorReason = e.getExceptionMessage();
         WritableMap map = Arguments.createMap();
         map.putString("method", "onRequestFailure");
-        map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_REQUEST_FAILED");
+        map.putString("error", errorReason != null ? errorReason : "ERROR_TYPE_NULL");
+        map.putString("type", "ERROR_TYPE_REQUEST_FAILED");
         map.putInt("code", requestCode);
-        sendEvent("TruecallerEvents", map);
+        
+        WritableMap eventMap = map.copy();
+        sendEvent("TruecallerEvents", eventMap);
+        
         promise.resolve(map);
       }
     }
