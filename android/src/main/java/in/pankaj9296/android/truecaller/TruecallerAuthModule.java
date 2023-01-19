@@ -338,14 +338,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
     public void onRequestSuccess(int requestCode, @Nullable VerificationDataBundle extras) {
       if (requestCode == VerificationCallback.TYPE_MISSED_CALL_INITIATED) {
         // Retrieving the TTL for missed-call
+        String ttl = "";
         if (extras != null) {
-          extras.getString(VerificationDataBundle.KEY_TTL);
+          ttl = extras.getString(VerificationDataBundle.KEY_TTL);
         }
         
         WritableMap map = Arguments.createMap();
         map.putBoolean("successful", true);
         map.putString("method", "onRequestSuccess");
         map.putString("type", "TYPE_MISSED_CALL_INITIATED");
+        map.putString("ttl", ttl);
         
         WritableMap eventMap = map.copy();
         sendEvent("TruecallerEvents", eventMap);
@@ -374,14 +376,16 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       }
       if (requestCode == VerificationCallback.TYPE_OTP_INITIATED) {
         // Retrieving the TTL for otp
+        String ttl = "";
         if (extras != null) {
-          extras.getString(VerificationDataBundle.KEY_TTL);
+          ttl = extras.getString(VerificationDataBundle.KEY_TTL);
         }
         
         WritableMap map = Arguments.createMap();
         map.putBoolean("successful", true);
         map.putString("method", "onRequestSuccess");
         map.putString("type", "TYPE_OTP_INITIATED");
+        map.putString("ttl", ttl);
         
         WritableMap eventMap = map.copy();
         sendEvent("TruecallerEvents", eventMap);
