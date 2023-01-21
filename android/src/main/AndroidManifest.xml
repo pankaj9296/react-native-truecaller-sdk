@@ -1,4 +1,3 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="in.pankaj9296.android.truecaller" xmlns:tools="http://schemas.android.com/tools">
-    <uses-sdk tools:overrideLibrary="in.pankaj9296.android.truecaller"/>
+          package="in.pankaj9296.android.truecaller" >
 </manifest>
