@@ -55,6 +55,7 @@ export interface TrueOptions {
   sdkOption?: boolean;
   buttonColor?: string;
   buttonTextColor?: string;
+  locale?: string;
   eventListener?: (event: any) => void;
 }
 
@@ -87,7 +88,7 @@ export interface TrueProfile {
 export default {
   initializeClient: (options: TrueOptions): any => {
 
-    TruecallerAuthModule.initializeClient(options);
+    TruecallerAuthModule?.initializeClient(options);
 
     let truecallerEventListener: EmitterSubscription | null = null;
 

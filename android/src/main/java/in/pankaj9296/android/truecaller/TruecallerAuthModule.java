@@ -203,6 +203,11 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       trueScopeBuilder.buttonTextColor(Color.parseColor(options.getString("buttonTextColor")));
     }
     TruecallerSDK.init(trueScopeBuilder.build());
+    
+    if (TruecallerSDK.getInstance() != null) {
+      Locale localeObj = new Locale(options.hasKey("locale") ? options.getString("locale") : "en");
+      TruecallerSDK.getInstance().setLocale(localeObj);
+    }
   }
 
   private final ITrueCallback sdkCallback = new ITrueCallback() {
