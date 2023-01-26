@@ -243,7 +243,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       map.putString("type", "TYPE_SUCCESS_PROFILE_SHARED");
       
       WritableMap eventMap = map.copy();
-      sendEvent("TruecallerEvents", eventMap);
+      sendEvent("truecallerEvent", eventMap);
       
       if (promise != null) {
         promise.resolve(map);
@@ -311,7 +311,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       map.putString("type", "ERROR_TYPE_PROFILE_SHARE_FAILED");
       
       WritableMap eventMap = map.copy();
-      sendEvent("TruecallerEvents", eventMap);
+      sendEvent("truecallerEvent", eventMap);
       
       if (promise != null) {
         promise.resolve(map);
@@ -329,7 +329,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("type", "ERROR_TYPE_VERIFICATION_REQUIRED");
         
         WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
+        sendEvent("truecallerEvent", eventMap);
         
         if (promise != null) {
           promise.resolve(map);
@@ -357,7 +357,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("ttl", ttl);
         
         WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
+        sendEvent("truecallerEvent", eventMap);
         
         if (promise != null) {
           promise.resolve(map);
@@ -375,7 +375,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("type", "TYPE_MISSED_CALL_RECEIVED");
         
         WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
+        sendEvent("truecallerEvent", eventMap);
         
         if (promise != null) {
           promise.resolve(map);
@@ -395,7 +395,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("ttl", ttl);
         
         WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
+        sendEvent("truecallerEvent", eventMap);
         
         if (promise != null) {
           promise.resolve(map);
@@ -415,7 +415,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("otp", OTP);
         
         WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
+        sendEvent("truecallerEvent", eventMap);
         
         if (promise != null) {
           promise.resolve(map);
@@ -435,7 +435,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("accessToken", accessToken);
         
         WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
+        sendEvent("truecallerEvent", eventMap);
           
         if (promise != null) {
           promise.resolve(map);
@@ -454,7 +454,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
         map.putString("accessToken", accessToken);
         
         WritableMap eventMap = map.copy();
-        sendEvent("TruecallerEvents", eventMap);
+        sendEvent("truecallerEvent", eventMap);
         
         if (promise != null) {
           promise.resolve(map);
@@ -474,7 +474,7 @@ public class TruecallerAuthModule extends ReactContextBaseJavaModule {
       map.putInt("code", requestCode);
       
       WritableMap eventMap = map.copy();
-      sendEvent("TruecallerEvents", eventMap);
+      sendEvent("truecallerEvent", eventMap);
       
       if (promise != null) {
         promise.resolve(map);
